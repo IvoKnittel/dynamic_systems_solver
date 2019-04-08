@@ -9,7 +9,7 @@ ice_mat=[];
 for j=1:length(Vb)
     vbe = Vb(j)*ones(1, length(vce));
     vbc = Vb(j)-vce;
-    [ib,ice] = ebersmoll2(vbe,vbc);
+    [ib,ice] = ebersmoll(vbe,vbc);
     ib_mat=[ib_mat ib'];
     ice_mat=[ice_mat ice'];
     plot(vce,ice);

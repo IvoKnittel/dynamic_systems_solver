@@ -1,12 +1,16 @@
-function [ib,ice] = ebersmoll(vbe,vbc)
-
-current_gain         = 100;
-current_gain_reverse = 100;
-nVt  = 1;
-Isat = 1;
-Icc  =  Isat*(exp(vbe/nVt)-1);
-Iec  = -Isat*(exp(vbc/nVt)-1);
-
+function [ib,ice,ibc,ibe] = ebersmoll(vbe,vbc)
+% for 2N3904 Transistor
+%               nVt, Isat
+%Icc =  diode(vbe,0.4 , 8e-3);
+Icc = diode(vbe,0.4 , 8e-3);
+%               nVt, Isat
+%Iec = -diode(vbc,0.4 , 8e-3);
+Iec = -diode(vbc,0.4 , 8e-3);
 ice  = Icc + Iec;
-ib   = Icc/current_gain + Iec/current_gain_reverse;
 
+current_gain         = 200;
+current_gain_reverse = 100;
+ibe  = Icc/current_gain;
+ibc  = Iec/current_gain_reverse;
+
+ib  =ibe +ibc;
