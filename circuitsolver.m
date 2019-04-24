@@ -1,24 +1,24 @@
-schmitt
+function circuitsolver()
+[t, ut, u0, uvaridx, u_names, voltage_select, adja_mat, R_mat, cap_mat, L_mat, current_select_matrix, current_names, current_select]=schmitt();
 %led
 
 u = u0;
 u(isnan(u0))=0;
 isvar = double(isnan(u0))';
-%load u
 uvec=u';
-%figure(3); clf;hold on; 
 ivec=[];
-for j = 1:length(t)
+crt_currents= zeros(size(cap_mat));
+dI_mat=zeros(size(cap_mat));
+for j = 1:length(t)-1
     uvec(uvaridx,end)           = ut(j);
-    [crt_voltages,crt_currents] = get_u_next_real_timepoint(t(j), uvec(:,end),adja_mat, cap_mat, current_select_matrix);
+
+    [crt_voltages,crt_currents, dI_mat] = get_u_next_real_timepoint(t(j), uvec(:,end),crt_currents, dI_mat, adja_mat, R_mat, cap_mat, L_mat);
     icrt = get_current_vector(crt_currents,current_select_matrix);
     [crt_voltages';icrt*1000];
     j/length(t);
     ivec=[ivec icrt'];
-    
     uvec = [uvec crt_voltages];
 end
-t=[0 t];
 
 col_array={'k.','b.','g.','r.','c.','m.','y.'};
 figure(2); subplot(2,1,1); cla; hold on

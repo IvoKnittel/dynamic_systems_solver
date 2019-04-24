@@ -1,18 +1,23 @@
-function [u, edge_current_mat, inv_node_capacitance] = get_u_next_real_timepoint(time, u, adja_mat, cap_mat, current_select_matrix)
+function [u, edge_current_mat, inv_node_capacitance, dI_mat] = get_u_next_real_timepoint(time, u, edge_current_mat, dI_mat, adja_mat, R0_mat, cap_mat, L_mat)
+% the function receives voltages for each node, a linare or nonlinear
+% devices assigned to edges, and a matrix of capacitances residing
+% on edges. Some of the capacitances are ficticious
+% the function returns updated voltages, a current for each edge
+% and an update of the ficticious capacitances 
+
 prev_current_into_node=[];
 num_nodes=length(u);
 grd_idx=num_nodes;
 cap_mat_finite = cap_mat;
 cap_mat_finite(cap_mat==Inf)=0;
-% uwatch=[];
-% iwatch=[];
-t=time;
+t  = time;
+dt = Inf;
 for j=1:1000
-    inv_node_capacitance = 1./sum(cap_mat,1);
-    edge_current_mat = get_edge_currents(u, adja_mat);
-%   icrt = get_current_vector(edge_current_mat,current_select_matrix);
-%    iwatch =[iwatch icrt(6)];
-%    uwatch =[uwatch u(3)];
+    inv_node_capacitance = 1./sum(cap_mat,1); 
+    R_mat = R0_mat + L_mat.*dI_mat;
+
+    prev_edge_current_mat = edge_current_mat;
+    edge_current_mat = get_edge_currents(u, adja_mat, R_mat);
 
    current_into_node  = -sum(edge_current_mat,1);
    u_charge_rate      = (current_into_node.*inv_node_capacitance)';
@@ -55,6 +60,7 @@ for j=1:1000
 %            end
        end
    end
+   dI_mat = (edge_current_mat - prev_edge_current_mat)/dt;
    prev_current_into_node = current_into_node;
 %   t=[t (t(end)+dt/damp)];   
    %u                = u + u_charge_rate*dt.*isvar/damp;

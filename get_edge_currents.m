@@ -1,4 +1,4 @@
-function edge_currents = get_edge_currents(node_voltages, circuit_graph)
+function edge_currents = get_edge_currents(node_voltages, circuit_graph, R_mat)
 % gets current from node voltage and a circuit graph
 % --------------------------------------------------
 %
@@ -34,13 +34,13 @@ for crt_source=1:num_nodes
         if crt_sink<=crt_source
             continue;
         end
-        current = current_source_to_sink(circuit_graph{crt_sink}{crt_source}, node_voltages, crt_source, crt_sink );
+        current = current_source_to_sink(circuit_graph{crt_sink}{crt_source}, 1/R_mat(crt_source, crt_sink), node_voltages, crt_source, crt_sink );
         edge_currents(crt_sink,crt_source) =  current;
         edge_currents(crt_source,crt_sink) = -current;
     end
 end
 
-function total_current = current_source_to_sink(device_id_array, node_voltages, source_idx, sink_idx)
+function total_current = current_source_to_sink(device_id_array, sigma, node_voltages, source_idx, sink_idx)
 total_current = 0;
 ubase=0;
 if iscell(device_id_array)
@@ -63,20 +63,14 @@ while j<=len
     
     u_source = node_voltages(source_idx); 
     u_sink   = node_voltages(sink_idx);
-    
-    if strcmp(device_id(1),'R')
-       du = u_source - u_sink; 
-       eval(['total_current = du/' device_id(2:end) ';'])
-       return
-    end
 
     if device_id ==0
+        du = u_source - u_sink; 
+        total_current = sigma*du;
         return
     end
 
     switch device_id
-        case 0
-            current = 0;
         case 'diode'
              % passes for positive voltage
              du = u_source - u_sink;
