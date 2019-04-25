@@ -1,5 +1,5 @@
 function circuitsolver()
-[t, ut, u0, uvaridx, u_names, voltage_select, adja_mat, R_mat, cap_mat, L_mat, current_select_matrix, current_names, current_select]=schmitt();
+[t, ut, u0, uvaridx, u_names, voltage_select, adja_mat, R_mat, cap_mat, L_mat, current_select_matrix, current_names, current_select]=coaxial();
 %led
 
 u = u0;
@@ -9,6 +9,7 @@ uvec=u';
 ivec=[];
 crt_currents= zeros(size(cap_mat));
 dI_mat=zeros(size(cap_mat));
+dI_mat(isinf(L_mat))=1;
 for j = 1:length(t)-1
     uvec(uvaridx,end)           = ut(j);
 

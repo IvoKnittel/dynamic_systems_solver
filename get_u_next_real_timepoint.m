@@ -1,4 +1,4 @@
-function [u, edge_current_mat, inv_node_capacitance, dI_mat] = get_u_next_real_timepoint(time, u, edge_current_mat, dI_mat, adja_mat, R0_mat, cap_mat, L_mat)
+function [u, edge_current_mat, dI_mat] = get_u_next_real_timepoint(time, u, edge_current_mat, dI_mat, adja_mat, R0_mat, cap_mat, L_mat)
 % the function receives voltages for each node, a linare or nonlinear
 % devices assigned to edges, and a matrix of capacitances residing
 % on edges. Some of the capacitances are ficticious
@@ -12,13 +12,14 @@ cap_mat_finite = cap_mat;
 cap_mat_finite(cap_mat==Inf)=0;
 t  = time;
 dt = Inf;
+eps=1e-12;
 for j=1:1000
     inv_node_capacitance = 1./sum(cap_mat,1); 
     R_mat = R0_mat + L_mat.*dI_mat;
 
     prev_edge_current_mat = edge_current_mat;
     edge_current_mat = get_edge_currents(u, adja_mat, R_mat);
-
+    edge_current_mat(edge_current_mat==0) = eps; 
    current_into_node  = -sum(edge_current_mat,1);
    u_charge_rate      = (current_into_node.*inv_node_capacitance)';
    u_diff_mat = ones(num_nodes,1)*(u') - u*ones(1,num_nodes);
@@ -28,6 +29,9 @@ for j=1:1000
        prev_u_charge_rate= prev_current_into_node.*inv_node_capacitance;
        u_charge_rate= current_into_node.*inv_node_capacitance;
        dt                 = 0.01*max(abs(u))./max(abs(u_charge_rate));
+       if dt==0
+          return
+       end
        u_is_oscillating = (sign(prev_u_charge_rate).*sign(u_charge_rate)==-1);
        if any(u_is_oscillating)
             % get rid of oscillation by increasing capacitance of oscillationg nodes
@@ -61,6 +65,7 @@ for j=1:1000
        end
    end
    dI_mat = (edge_current_mat - prev_edge_current_mat)/dt;
+   dI_mat(dI_mat==0)=eps;
    prev_current_into_node = current_into_node;
 %   t=[t (t(end)+dt/damp)];   
    %u                = u + u_charge_rate*dt.*isvar/damp;
