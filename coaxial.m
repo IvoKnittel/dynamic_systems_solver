@@ -27,7 +27,9 @@ C = C_per_m/len;
                     
 % Signal input
 % --------------
-[ut, t]=generate_signal_input();
+dt=1e-11;
+t = 0:dt:1e-9;
+ut = ones(1,length(t));
 
 % The device matrix
 % -----------------

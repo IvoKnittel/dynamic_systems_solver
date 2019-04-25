@@ -10,10 +10,10 @@ ivec=[];
 crt_currents= zeros(size(cap_mat));
 dI_mat=zeros(size(cap_mat));
 dI_mat(isinf(L_mat))=1;
-for j = 1:length(t)-1
-    uvec(uvaridx,end)           = ut(j);
 
-    [crt_voltages,crt_currents, dI_mat] = get_u_next_real_timepoint(t(j), uvec(:,end),crt_currents, dI_mat, adja_mat, R_mat, cap_mat, L_mat);
+for j = 2:length(t)-1
+    uvec(uvaridx,end)           = ut(j);
+    [crt_voltages, ~, crt_currents, dI_mat] = get_u_next_real_timepoint(t(j)-t(j-1), uvec(:,end),crt_currents, dI_mat, adja_mat, R_mat, cap_mat, L_mat);
     icrt = get_current_vector(crt_currents,current_select_matrix);
     [crt_voltages';icrt*1000];
     j/length(t);
