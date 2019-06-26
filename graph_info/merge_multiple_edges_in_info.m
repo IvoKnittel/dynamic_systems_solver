@@ -1,4 +1,17 @@
 function [edge_info, node_info] = merge_multiple_edges_in_info(edge_info, node_info, idx_multiple)
+% Merges multiple edges connecting the same node pair
+% into one edge with all devices in parallel
+% ----------------------------------------------------------------------
+% INPUTS:
+% edge_info       ... edge_info_type
+% node_info       ... node_info_type
+% idx_multiple    ... indices of edges between the same node pair
+% OUTPUTS:
+% edge_info       ... edge_info_type
+% node_info       ... node_info_type
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
+
 % merges two edges beween the same startend nodes. 
 % The result is one edge with the payloads (i.e.devices) of both edges on
 % it in parallel 

@@ -16,10 +16,13 @@ function  [node_info, edge_info] = schmitt()
 %
 %                            u7=0V
 %
-
-% node info: name, whether node is a transistor, whether node exists only
-% for nice display, whether node voltage is floating
 % -----------------------------------------------------------------------
+% INPUTS:
+% OUTPUTS:
+% node_info  ... node_info_type
+% edge_info  ... edge_info_type 
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 Ct=1e-11;
 Cgrd = 1e-15;
 node_info            = node_info_type();

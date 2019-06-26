@@ -1,6 +1,14 @@
 function plot_config = get_plot_config(node_info)
-% names of nodes for display
-% -------------------------
+% determines which node potentials and which
+% edge currents are displays, including names and formats
+% ----------------------------------------------
+% INPUTS:
+% node_info     ... constant non-matrix info about cicuit nodes
+% comp_params   ...
+% OUTPUTS:
+% plot_config   ... plot_config struct
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 plot_config.voltage_select= [false      true          true       true       true        true     false ];   
 plot_config.current.select_matrix=zeros(node_info.num_nodes, node_info.num_nodes);
 plot_config.current.select_matrix(2,1)=1; % left in

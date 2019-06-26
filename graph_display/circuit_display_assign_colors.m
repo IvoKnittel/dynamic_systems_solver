@@ -1,4 +1,15 @@
 function [node_info,edge_info] = circuit_display_assign_colors(node_info, edge_info)
+% update display labels, node and edge colors 
+% ----------------------------------------------------
+% INPUTS:
+% node_info       ... node_info_type
+% edge_info       ... edge_info_type
+% OUTPUTS:
+% node_info     ... node_info_type
+% edge_info     ... edge_info_type
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
+
 % a transistor node is displayed yellow
 % fixed voltage nodes are displayed
 % -------------------------------------

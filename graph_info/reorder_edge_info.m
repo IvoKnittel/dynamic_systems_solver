@@ -1,8 +1,14 @@
 function edge_info = reorder_edge_info(edge_info, names)
-
-% We have to reorder everything again 
-% because the interal ids of the graph have changed
-% --------------------------------------------------
+% When nodes or edges were removed, edge infor must be reordered
+% to comply with the matlab graph functions 
+% ----------------------------------------------------------------------
+% INPUTS:
+% edge_info       ... edge_info_type
+% names           ... cell array of names of all nodes
+% OUTPUTS:
+% edge_info     ... edge_info_type
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 
 % we happen to know that the names of edge startend nodes are assigned
 % correctly

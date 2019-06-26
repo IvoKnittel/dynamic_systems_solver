@@ -1,4 +1,16 @@
-function [node_info2, edge_info] = remove_cicuit_nodes(node_info, edge_info, delete_node_idx)
+function [node_info, edge_info] = remove_cicuit_nodes(node_info, edge_info, delete_node_idx)
+% Nodes are removed either because they are same-potential, or transistors replaced by Ebers-Moll
+% devices
+% ----------------------------------------------------------------------
+% INPUTS:
+% node_info       ... node_info_type
+% edge_info       ... edge_info_type
+% delete_node_idx ... array of indices in node_info
+% OUTPUTS:
+% node_info     ... node_info_type
+% edge_info     ... edge_info_type
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 
 [node_info, edge_info]= circuit_display_assign_colors(node_info, edge_info);
 edge_info.s=zeros(1,length(edge_info.s_by_name));
@@ -24,9 +36,9 @@ for j=1:length(delete_node_idx)
 end
 [node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);
 delete_edge_idx = unique(delete_edge_idx);
-node_info2 = delete_nodes_from_info(node_info, delete_node_idx);
-[edge_info, node_info2] = delete_edges_from_info(edge_info, node_info2, delete_edge_idx);
-[node_info2, edge_info] = init_cicuit_nodes(node_info2, edge_info);
-edge_info = reorder_edge_info(edge_info, node_info2.names);
-[node_info2, edge_info] = init_cicuit_nodes(node_info2, edge_info);
+node_info = delete_nodes_from_info(node_info, delete_node_idx);
+[edge_info, node_info] = delete_edges_from_info(edge_info, node_info, delete_edge_idx);
+[node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);
+edge_info = reorder_edge_info(edge_info, node_info.names);
+[node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);
 

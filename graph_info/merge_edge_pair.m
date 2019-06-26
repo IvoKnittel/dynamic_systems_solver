@@ -1,8 +1,19 @@
 function edge_info =  merge_edge_pair(edge_info, deleted_node, neigbor_node_pair, names)
-% merges two edges with one node in common, which will disappear. 
+% Merges two edges with one node in common, returning the new merged edge.
+%
 % The result is one edge with the payloads (i.e.devices) of both edges on
 % it in series. If the deleted node is a transistor, it is replaced
 % by its Ebers-Moll components 
+% ----------------------------------------------------------------------
+% INPUTS:
+% edge_info         ... edge_info_type
+% delete_node_idx   ... node index existing in edge_info.s or .t
+% neigbor_node_pair ... pair of node indices
+% names             ... cell array of names of all nodes
+% OUTPUTS:
+% edge_info         ... edge_info_type
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 id_deleted = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(1));
 id_other   = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(2));
 

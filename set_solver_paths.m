@@ -1,3 +1,4 @@
+% all paths to run the dynamic system solver
 addpath('C:\Users\IvoKn\time_series_management_system\compete')
 addpath('C:\Users\IvoKn\time_series_management_system\compete\MIT')
 addpath('C:\Users\IvoKn\time_series_management_system\log')
