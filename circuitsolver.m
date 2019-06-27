@@ -20,10 +20,12 @@ plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLab
 comp_params.eps=1e-89;
 
 [node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp);
-node_mats.const = get_impedance_matrices_for_calculation(node_info, edge_info, comp_params);
 figure(2);
-G = graph(edge_info.s,edge_info.t,1, node_info.names);
+G = graph(edge_info.s,edge_info.t);%,1, node_info.names);
 plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_info.labels, 'EdgeCData', edge_info.colors);
+
+node_mats.const = get_impedance_matrices_for_calculation(node_info, edge_info, comp_params);
+node_mats.var = init_variable_impedance_matrices([], node_info, node_mats.const);
 
 plot_config = get_plot_config(node_info);
 
@@ -31,7 +33,7 @@ plot_config = get_plot_config(node_info);
 % --------------
 [signal.data, signal.time]=generate_signal_input();
 signal.idx = strcmp(node_info.names,'signal');
-signal.timestep = signal_time(2)-signal.time(1);
+signal.timestep = signal.time(2)-signal.time(1);
 
 % external voltage of node, or NaN if voltage is variable         
 u0 = NaN(1,node_info.num_nodes);
@@ -45,14 +47,9 @@ u(isnan(u0))=0;
 uvec=u';
 ivec=[];
 
-null_node_mat           = zeros(node_info.num_nodes,node_info.num_nodes);
-node_mats.var.currents  = null_node_mat;
-node_mats.var.dI        = null_node_mat;
-node_mats.var.dI(isinf(L_mat))=1;
-
 for j = 2:length(signal.time)-1
-    uvec(signal_idx,end)                    = signal.data(j);
-    [crt_voltages, ~, node_mats.var] = get_u_next_real_timepoint(signal.timestep, uvec(:,end), node_mats, node_info, comp_params);
+    uvec(signal.idx,end)                    = signal.data(j);
+    [crt_voltages, ~, node_mats.var] = get_u_next_real_timepoint(signal.timestep, uvec(:,end), node_mats, node_info, edge_info, comp_params);
     icrt = get_current_vector(crt_currents,current_select_matrix);
     [crt_voltages';icrt*1000];
     j/length(t);

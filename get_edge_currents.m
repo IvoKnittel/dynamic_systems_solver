@@ -1,4 +1,4 @@
-function edge_currents = get_edge_currents(node_voltages, circuit_graph, R_mat)
+function edge_currents = get_edge_currents(node_voltages, circuit_graph, edge_info, R_mat)
 % gets current from node voltage and a circuit graph
 % --------------------------------------------------
 %
@@ -29,72 +29,29 @@ for crt_source=1:num_nodes
     % for current source node, loop over all nodes it is feeding
     for crt_sink=1:num_nodes
         
-        % a node doesnt feed itself. Also ignore node that have been
+        % a node doesnt feed itself. Also ignore nodes that have been
         % processed as sources before
         if crt_sink<=crt_source
             continue;
         end
-        current = current_source_to_sink(circuit_graph{crt_sink}{crt_source}, 1/R_mat(crt_source, crt_sink), node_voltages, crt_source, crt_sink );
+        if ~isnan(R_mat(crt_source, crt_sink))
+            du = u_source - u_sink; 
+            current = sigma*du/R_mat(crt_source, crt_sink);
+        end
+        current = current + current_source_to_sink([matmem_transistor, node_voltages, crt_source, crt_sink);
         edge_currents(crt_sink,crt_source) =  current;
         edge_currents(crt_source,crt_sink) = -current;
     end
 end
 
-function total_current = current_source_to_sink(device_id_array, sigma, node_voltages, source_idx, sink_idx)
+function total_current = current_source_to_sink(matmem_transistor, node_voltages, source_idx, sink_idx)
+devices  = matmem_transistor.type{crt_sink,crt_source};
+base_idx = matmem_transistor.base_idx{crt_sink,crt_source};
 total_current = 0;
-ubase=0;
-if iscell(device_id_array)
-    len = length(device_id_array);
-else
-    len =1;
+
+if isempty(devices)
+    return
 end
-j=1; 
-while j<=len
-    if iscell(device_id_array)
-       device_id = device_id_array{j};
-    else
-       device_id = device_id_array;
-    end
-    if length(device_id)>=2 && strcmp(device_id(1:2),'ec')
-       base_idx  = device_id_array{j+1};
-       ubase     = node_voltages(base_idx);
-       j=j+1;
-    end    
-    
-    u_source = node_voltages(source_idx); 
-    u_sink   = node_voltages(sink_idx);
-
-    if device_id ==0
-        du = u_source - u_sink; 
-        total_current = sigma*du;
-        return
-    end
-
-    switch device_id
-        case 'diode'
-             % passes for positive voltage
-             du = u_source - u_sink;
-             %                           nVt, Isat
-             current         = diode(du, 0.4, 1e-3);
-        case 'bc' %current from collector to base
-            %blocks for positive voltage
-            [dummy,dummy2, current]           = ebersmoll(NaN,u_sink-u_source);
-        case 'ec' %current from collector to emitter
-
-             
-             ubase_emitter   = ubase-u_sink;   % transistor action if this is >0.7V
-             ubase_collector = ubase-u_source; % this should be negative, blocking
-            [dummy, current]                  = ebersmoll(ubase_emitter,ubase_collector);
-        case 'eb' %current from base to emitter
-            [dummy, dummy2, dummy3, current]  = ebersmoll(u_source-u_sink,NaN);    
-        case 'bc2'
-            [dummy,dummy2, current]           = ebersmoll(NaN,u_sink-u_source);
-        case 'ec2'
-            [dummy, current]                  = ebersmoll(ubase-u_sink,ubase-u_source);
-        case 'eb2'
-            [dummy, dummy2, dummy3, current]  = ebersmoll(u_source-u_sink,NaN);
-    end
-    
-    total_current = total_current + current;
-    j=j+1;
+for device_idx = 1:length(devices)
+    total_current = total_current + current_single_device(devices{k}, node_voltages(source_idx), node_voltages(sink_idx), node_voltages(base_idx(k)));
 end

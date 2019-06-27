@@ -1,4 +1,4 @@
-function [node_info, edge_info, matmem] = get_impedance_matrices_for_calculation(node_info, edge_info, comp_params)
+function matmem = get_impedance_matrices_for_calculation(node_info, edge_info, comp_params)
 % impedance matrices for computations are derived from graph info 
 % ----------------------------------------------------------------------
 % INPUTS:
@@ -29,8 +29,16 @@ matmem.is_trans = matmem.is_ce | matmem.is_be | matmem.is_bc;
 % -------------------------
 grd_idx                     = find(strcmp(node_info.names,'sink'));  
 matmem.C            = get_adjamat(node_info, edge_info, 'C');
+
 matmem.C(grd_idx,:) = node_info.Cgrd;
 matmem.C(:,grd_idx) = node_info.Cgrd';
+
+% set diagonal capacitance to Inf for fixed volage nodes, to zero otherwise
+% -------------------------------------------------------------------------
+C_diag = node_info.Cgrd;
+C_diag(~isinf(node_info.Cgrd)) = 0;
+matmem.C = matmem.C + diag(C_diag);
+
 matmem.L = get_adjamat(node_info, edge_info, 'L');
 
 is_R = ~isnan(matmem.R);
@@ -54,3 +62,16 @@ matmem.LInf(isnan(matmem.LInf)) = 0;
 
 matmem.maskabs_mat = matmem.LInf;
 matmem.maskabs_mat(~matmem.maskabs_mat==Inf) = 0;
+
+% get device matrix
+matmem.transistor.type      = cell(node_info.num_nodes, node_info.num_nodes);
+matmem.transistor.base_idx  = cell(node_info.num_nodes, node_info.num_nodes);
+
+for crt_source=1:node_info.num_nodes
+    % for current source node, loop over all nodes it is feeding
+    for crt_sink=1:node_info.num_nodes
+        [matmem.transistor.type{crt_sink,crt_source}, matmem.transistor.base_idx{crt_sink,crt_source}] = get_device(edge_info, crt_source, crt_sink);
+    end
+end
+
+
