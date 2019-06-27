@@ -40,9 +40,12 @@ node_info.id         = 1:length(node_info.names);
 edge_info             = edge_info_type();
 edge_info.s_by_name   = {'supply',     'supply',     'supply_cpy',  'upper_left', 'upper_left', 'upper_right' , 'left_trans', 'left_trans', 'left base', 'right_trans', 'lower', 'sink',       'sink'};
 edge_info.t_by_name   = {'upper_left', 'supply_cpy', 'upper_right', 'left_trans', 'right_trans', 'right_trans', 'left base',  'lower'     , 'signal'   , 'lower'      , 'sink'  , 'sink_cpy_l', 'sink_cpy_r'};
-edge_info.R =           [   1001          0              1003           0             0              0              0             0            1002        0              20       0              0      ];
+% R is in parallel to other devices on the same edge
+edge_info.R =           [   1001          0              1003          NaN           NaN            NaN            NaN           NaN           1002       NaN            20       0              0      ];
+% L is in series with other devices on the same edge
 edge_info.L =           [    0            0               0             0             0              0              0             0             0          0              0        0              0      ];
-edge_info.C =           [    0            0               0             Ct/2          Ct/2           Ct/2           Ct/2          Ct/2          0          Ct/2           0        0              0      ];
+% C is in parallel with other devices on the same edge
+edge_info.C =           [    0            0               0            Ct/2          Ct/2           Ct/2           Ct/2          Ct/2          0          Ct/2           0        0              0      ];
 edge_info.is_base     = [    0            0               0             0             1              0              1             0             0          0              0        0              0      ];
 edge_info.is_collector =[    0            0               0             1             0              1              0             0             0          0              0        0              0      ];
 edge_info.is_emitter  = [    0            0               0             0             0              0              0             1             0          1              0        0              0      ];

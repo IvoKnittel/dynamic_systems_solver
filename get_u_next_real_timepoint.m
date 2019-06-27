@@ -1,4 +1,4 @@
-function [u, t, mem_var] = get_u_next_real_timepoint(time, u, mem, node_info, edge_info, comp_params)
+function [u, t, mem_var] = get_u_next_real_timepoint(time, u, mem, node_info, comp_params)
 % the function receives voltages for each node, a matrix of linear or nonlinear
 % devices assigned to edges, and a matrix of capacitances residing
 % on edges. Some of the capacitances are ficticious.
@@ -31,7 +31,7 @@ for j=1:1000
    R_mat = mem.const.R + mem.const.L.*(mem.var.dI + mem.const.maskabs_mat);
 
    prev_edge_current_mat = mem.var.currents;
-   mem.var.currents = get_edge_currents(u, node_info, edge_info, R_mat);
+   mem.var.currents = get_edge_currents(u, mem.const);
    mem.var.currents = mem.var.currents + mem.Reps; 
    current_into_node  = -sum(mem.var.currents,1);
    %u_diff_mat = ones(num_nodes,1)*(u') - u*ones(1,num_nodes); 

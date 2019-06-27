@@ -1,21 +1,29 @@
-function [devices, base_idx] = get_device(edge_info, s, t)
+function devices = get_device(edge_info, s, t)
 % ------------------------------------------------------------------------
 devices ={};
-base_idx = [];
 edge_idx = find(edge_info.s==s & edge_info.t == t);
 if isempty(edge_idx)
     return
 end
 
+devices = {}; 
+empty_device = device_type(); 
+
 for j=1:edge_info.is_bc(edge_idx)
-    devices{length(devices)+1} = 'bc';
+    next_device                = empty_device;
+    next_device.class          = 'bc';
+    devices{length(devices)+1} = next_device;
 end
-for j=1:edge_info.is_be(edge_idx) 
-    devices{length(devices)+1} = 'be';
+for j=1:edge_info.is_be(edge_idx)     
+    next_device                = empty_device;
+    next_device.class          = 'be';
+    devices{length(devices)+1} = next_device;
 end
-for j=1:edge_info.is_ce(edge_idx)        
-    devices{length(devices)+1} = 'ce';
-    base_idx = [base_idx get_base_idx(edge_info, edge_idx)];
+for j=1:edge_info.is_ce(edge_idx)
+    next_device                = empty_device;
+    next_device.class          = 'ce';
+    next_device.base_idx        =  get_base_idx(edge_info, edge_idx);
+    devices{length(devices)+1} = next_device;
 end
 
 function base_idx = get_base_idx(edge_info, edge_idx)
