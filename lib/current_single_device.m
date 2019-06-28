@@ -1,9 +1,9 @@
-function  current = current_single_device(device_id, node_voltages, source_idx, sink_idx, base_idx)
+function  [device, current, time_constant, error] = current_single_device(device, node_voltages, source_idx, sink_idx, comp_params)
 % gets current from node voltages and constant impedance and device
 % matrices
 % ----------------------------------------------------------------------
 % INPUTS:
-% device_id      ... string identifier
+% device         ... device_type
 % node_voltages  ... potentials of all n nodes
 % source_idx     ... node index
 % sink_idx       ... node index
@@ -13,35 +13,56 @@ function  current = current_single_device(device_id, node_voltages, source_idx, 
 % current        ... current value
 % ----------------------------------------------
 
-u_source = node_voltages(source_idx); 
-u_sink = node_voltages(sink_idx); 
-switch device_id
-    case 'diode'
-         % passes for positive voltage
-         du = u_source - u_sink;
-         %                           nVt, Isat
-         current         = diode(du, 0.4, 1e-3);
-    case 'bc' %current from collector to base
-        %blocks for positive voltage
-        [dummy,dummy2, current]           = ebersmoll(NaN,u_sink-u_source);
-    case 'ec' %current from collector to emitter
-         u_base = node_voltages(base_idx);
-         ubase_emitter   = u_base-u_sink;   % transistor action if this is >0.7V
-         ubase_collector = u_base-u_source; % this should be negative, blocking
-        [dummy, current]                  = ebersmoll(ubase_emitter,ubase_collector);
-    case 'ce' %current from collector to emitter
-         u_base = node_voltages(base_idx);
-         ubase_emitter   = u_base-u_sink;   % transistor action if this is >0.7V
-         ubase_collector = u_base-u_source; % this should be negative, blocking
-        [dummy, current]                  = ebersmoll(ubase_emitter,ubase_collector);
-    case 'eb' %current from base to emitter
-        [dummy, dummy2, dummy3, current]  = ebersmoll(u_source-u_sink,NaN);  
-    case 'be' %current from base to emitter
-        [dummy, dummy2, dummy3, current]  = ebersmoll(u_source-u_sink,NaN);  
-    case 'bc2'
-        [dummy,dummy2, current]           = ebersmoll(NaN,u_sink-u_source);
-    case 'ec2'
-        [dummy, current]                  = ebersmoll(ubase-u_sink,ubase-u_source);
-    case 'eb2'
-        [dummy, dummy2, dummy3, current]  = ebersmoll(u_source-u_sink,NaN);
+% applied voltage and own voltage are different, set internal state
+% an edge in general contains device, R, L, and C
+% it is either nonlinear or RLC  (missing nl device is []) 
+%      |              |
+%      |          --------
+%      |         |        |
+%      |         L        C      either, or   
+%      |                         missing L is L = 0 
+%      |                         missing C is C = 0
+%      |         |        |
+%      |          -------- 
+%      |              |
+%      |              |
+%   nl-device         R      missing R is R = Inf 
+%      |              |        
+%                     |
+% R,L,C may be dummy, tiny for computation only.
+
+current       = 0;
+time_constant = NaN;
+error         = false;
+
+if ~isempty(device.nonlinear)
+     current       = get_current_of_transistor_device(device.nonlinear.class, node_voltages, source_idx, sink_idx, device.nonlinear.base_idx);
+     time_constant = comp_params.time_epsilon;
+     error         = false;
+     return
+end
+
+voltage = node_voltages(source_idx) - node_voltages(sink_idx);
+if impedance_has_actual_value(device.L)
+   assert(impedance_has_actual_value(device.C));
+
+   % Use formula for inductance voltage
+   % voltage = -device.L*(current - device.var.j)/time_constant -device.R*current;
+
+   % flag error if current depends significantly on dummy impedance
+   % --------------------------------------------------------------
+   error = device.L_is_dummy && device.L/time_constant > device.R*comp_params.dummy_influence_threshold;
+
+   current = device.var.j - (voltage+device.R*current)*time_constant/device.L;
+   device.var.j = current;
+   time_constant = device.L/device.R; 
+end
+if impedance_has_actual_value(device.C)
+   assert(impedance_has_actual_value(device.L));
+   % flag error if capacitor is still charging
+   % --------------------------------------------------------------
+   error = device.C_is_dummy && abs(voltage - device.var.q/device.C) > abs(voltage)*comp_params.dummy_influence_threshold;
+   current = (voltage - device.var.q/device.C)/device.R;
+   device.var.q = current*time_constant;
+   time_constant = device.R*device.C; 
 end

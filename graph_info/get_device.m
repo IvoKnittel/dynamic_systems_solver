@@ -5,9 +5,10 @@ edge_idx = find(edge_info.s==s & edge_info.t == t);
 if isempty(edge_idx)
     return
 end
-
+devices = get_device(edge_info, edge_idx);
+function devices = get_devices_by_idx(edge_info, edge_idx)
 devices = {}; 
-empty_device = device_type(); 
+empty_device = nonlinear_device_type(); 
 
 for j=1:edge_info.is_bc(edge_idx)
     next_device                = empty_device;

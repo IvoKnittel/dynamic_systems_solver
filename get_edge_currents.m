@@ -53,5 +53,5 @@ end
 
 for device_idx = 1:length(devices)
     crt_device = devices{device_idx};
-    total_current = total_current + current_single_device(crt_device.class, node_voltages, source_idx, sink_idx, crt_device.base_idx);
+    total_current = total_current + get_current_of_transistor_device(crt_device.class, node_voltages, source_idx, sink_idx, crt_device.base_idx);
 end

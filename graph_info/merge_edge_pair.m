@@ -23,7 +23,16 @@ if ~isempty(id_deleted)
     new_edge_info.t_by_name    =  names(neigbor_node_pair(2));
     new_edge_info.R            =  edge_info.R(id_deleted) + edge_info.R(id_other);        
     new_edge_info.L            =  edge_info.L(id_deleted) + edge_info.L(id_other);      
-    new_edge_info.C            =  edge_info.C(id_deleted) + edge_info.C(id_other); 
+    new_edge_info.C            =  edge_info.C(id_deleted) + edge_info.C(id_other);
+
+    idx = [id_deleted id_other];
+    sel_idx = impedance_has_actual_value([edge_info.R_is_dummy(id_deleted) edge_info.R_is_dummy(id_other)]);
+    new_edge_info.R_is_dummy       = all(edge_info.R_is_dummy(idx(sel_idx)));
+    sel_idx = impedance_has_actual_value([edge_info.L_is_dummy(id_deleted) edge_info.L_is_dummy(id_other)]);
+    new_edge_info.L_is_dummy       = all(edge_info.L_is_dummy(idx(sel_idx)));
+    sel_idx = impedance_has_actual_value([edge_info.C_is_dummy(id_deleted) edge_info.C_is_dummy(id_other)]);
+    new_edge_info.C_is_dummy       = all(edge_info.C_is_dummy(idx(sel_idx)));
+    
     is_base      =  edge_info.is_base(id_deleted)     | edge_info.is_base(id_other);
     is_collector =  edge_info.is_collector(id_deleted)| edge_info.is_collector(id_other);
     is_emitter   =  edge_info.is_emitter(id_deleted)  | edge_info.is_emitter(id_other);

@@ -6,3 +6,6 @@ node_info.disp_only  = [];
 node_info.floating   = [];
 node_info.Cgrd       = [];
 node_info.id         = [];
+node_info.active     = false;
+node_info.C          = [];
+node_info.timeconstant = [];

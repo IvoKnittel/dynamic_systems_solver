@@ -26,6 +26,10 @@ matmem.is_trans = matmem.is_ce | matmem.is_be | matmem.is_bc;
 
 for crt_source=1:node_info.num_nodes
     for crt_sink=1:node_info.num_nodes
-        matmem.transistor{crt_sink,crt_source} = get_device(edge_info, crt_source, crt_sink);
+        edge_idx = find(edge_info.s==s & edge_info.t == t);
+        if isempty(edge_idx)
+            continue
+        end
+        matmem.transistor{crt_sink,crt_source} = get_device(edge_info, edge_idx);
     end
 end
