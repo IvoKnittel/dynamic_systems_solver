@@ -1,4 +1,4 @@
-function edge_currents = get_edge_currents(node_voltages, mem_const)
+function edge_currents = get_edge_currents(node_voltages, mem_const, sigma)
 % gets current from node voltages and constant impedance and device
 % matrices
 % ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ for crt_source=1:num_nodes
             continue;
         end
         
-        current = mem_const.sigma(crt_source, crt_sink)*(node_voltages(crt_source) - node_voltages(crt_sink));
+        current = sigma(crt_source, crt_sink)*(node_voltages(crt_source) - node_voltages(crt_sink));
         current = current + current_source_to_sink(mem_const.transistor, node_voltages, crt_source, crt_sink);
         edge_currents(crt_sink,crt_source) =  current;
         edge_currents(crt_source,crt_sink) = -current;

@@ -15,15 +15,18 @@ matmem.R = get_adjamat(node_info, edge_info, 'R');
 % -------------------------
 grd_idx             = find(strcmp(node_info.names,'sink'));  
 matmem.C            = get_adjamat(node_info, edge_info, 'C');
-
-matmem.C(grd_idx,:) = node_info.Cgrd;
-matmem.C(:,grd_idx) = node_info.Cgrd';
+select_idx = isinf(node_info.Cgrd);
+matmem.C(grd_idx,select_idx) = node_info.Cgrd(select_idx);
+matmem.C(select_idx,grd_idx) = node_info.Cgrd(select_idx)';
 
 % set diagonal capacitance to Inf for fixed volage nodes, to zero otherwise
 % -------------------------------------------------------------------------
 C_diag = node_info.Cgrd;
 C_diag(~isinf(node_info.Cgrd)) = 0;
 matmem.C = matmem.C + diag(C_diag);
+
+
+comp_params.time_epsilon
 
 matmem.L = get_adjamat(node_info, edge_info, 'L');
 
@@ -48,5 +51,5 @@ matmem.LInf = matmem.L;
 matmem.LInf(~is_connection)     = Inf;
 matmem.LInf(isnan(matmem.LInf)) = 0;
 
-matmem.maskabs_mat = matmem.LInf;
-matmem.maskabs_mat(~matmem.maskabs_mat==Inf) = 0;
+matmem.Inf_no_connect = matmem.LInf;
+matmem.Inf_no_connect(~matmem.Inf_no_connect==Inf) = 0;

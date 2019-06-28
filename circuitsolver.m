@@ -18,10 +18,17 @@ G = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
 plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
 
 comp_params.eps=1e-89;
+comp_params.time_epsilon = 1e-15;
+comp_params.C_to_ground  = 1e-15;
 
-[node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp);
+edge_info_disp         =  add_capacitance_to_ground(node_info_disp, edge_info_disp, comp_params.time_epsilon, comp_params.C_to_ground);
+[node_info, edge_info] =  init_cicuit_nodes(node_info_disp, edge_info_disp);
+edge_info              =  reorder_edge_info(edge_info, node_info.names);
+[node_info, edge_info] =  init_cicuit_nodes(node_info, edge_info);
+
+[node_info, edge_info] = get_graph_info_for_calculation(node_info, edge_info);
 figure(2);
-G = graph(edge_info.s,edge_info.t);%,1, node_info.names);
+G = graph(edge_info.s,edge_info.t,1, node_info.names);
 plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_info.labels, 'EdgeCData', edge_info.colors);
 
 node_mats_empty = init_matmem(node_info.num_nodes, length(edge_info.s));
@@ -29,7 +36,7 @@ node_mats.const = get_device_matrix_for_calculation(node_mats_empty.const, node_
 node_mats.const = get_impedance_matrices_for_calculation(node_mats.const, node_info, edge_info, comp_params);
 node_mats.var   = init_variable_impedance_matrices(node_mats_empty.var, node_mats.const);
 
-plot_config = get_plot_config(node_info);
+% plot_config = get_plot_config(node_info);
 
 % Supply voltages and Signal
 % --------------
@@ -50,7 +57,7 @@ uvec=u';
 ivec=[];
 
 for j = 2:length(signal.time)-1
-    uvec(signal.idx,end)                    = signal.data(j);
+    uvec(signal.idx,end)             = signal.data(j);
     [crt_voltages, ~, node_mats.var] = get_u_next_real_timepoint(signal.timestep, uvec(:,end), node_mats, node_info, comp_params);
     icrt = get_current_vector(crt_currents,current_select_matrix);
     [crt_voltages';icrt*1000];

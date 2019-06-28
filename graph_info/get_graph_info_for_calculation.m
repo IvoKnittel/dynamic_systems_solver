@@ -18,7 +18,6 @@ trans_idx = find(node_info2.is_trans~=0);
 [node_info3, edge_info3] = remove_cicuit_nodes(node_info2, edge_info2, trans_idx(1));
 trans_idx = find(node_info3.is_trans~=0);
 [node_info, edge_info] = remove_cicuit_nodes(node_info3, edge_info3, trans_idx);
-
 [edge_info, node_info] = merge_multiple_edges(edge_info, node_info);
 
 [node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);

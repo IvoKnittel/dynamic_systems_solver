@@ -31,3 +31,5 @@ matmem.var.num_nodes      = NaN(num_nodes, num_nodes);
 matmem.var.currents       = NaN(num_nodes, num_nodes);
 matmem.var.dI             = NaN(num_nodes, num_nodes);
 matmem.var.C              = NaN(num_nodes, num_nodes);
+matmem.var.R              = NaN(num_nodes, num_nodes);
+matmem.var.sigma          = NaN(num_nodes, num_nodes);

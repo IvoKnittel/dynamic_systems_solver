@@ -28,10 +28,10 @@ prev_current_into_node  = -sum(mem.var.currents,1);
 t=0;
 for j=1:1000
    inv_node_capacitance = 1./sum(mem.var.C,1); 
-   R_mat = mem.const.R + mem.const.L.*(mem.var.dI + mem.const.maskabs_mat);
-
+   mem.var.R = mem.const.R + mem.const.L.*(mem.var.dI + mem.const.Inf_no_connect);
+   mem.var.sigma = 1./mem.const.R + mem.const.L.*(mem.var.dI + mem.const.Inf_no_connect);
    prev_edge_current_mat = mem.var.currents;
-   mem.var.currents = get_edge_currents(u, mem.const);
+   mem.var.currents = get_edge_currents(u, mem.const, mem.var.sigma);
    mem.var.currents = mem.var.currents + mem.Reps; 
    current_into_node  = -sum(mem.var.currents,1);
    %u_diff_mat = ones(num_nodes,1)*(u') - u*ones(1,num_nodes); 

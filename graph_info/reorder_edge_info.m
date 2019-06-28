@@ -17,14 +17,28 @@ ascend_idx  = 1:length(edge_info.s);
 reorder_idx = 1:length(edge_info.s);
 last_occur_idx = 0;
 for edge_idx_in_graph=1:length(edge_info.s)
+    % node pair of each edge in graph as they come in matlab order
+    % ------------------------------------------------------------
     pair_in_graph = G.Edges.EndNodes(edge_idx_in_graph,:);
+    
+    % search edge with the same end nodes (there may several)
+    % -------------------------------------------------------
     edge_idx_in_struct = find(ascend_idx >last_occur_idx & strcmp(pair_in_graph{1}, edge_info.s_by_name) & strcmp(pair_in_graph{2}, edge_info.t_by_name));
+    
     if isempty(edge_idx_in_struct)
+        % try the other orientiation as  well
+        % -----------------------------------
         edge_idx_in_struct = find(ascend_idx >last_occur_idx & strcmp(pair_in_graph{1}, edge_info.t_by_name) & strcmp(pair_in_graph{2}, edge_info.s_by_name));
     end
     if length(edge_idx_in_struct)==1
         reorder_idx(edge_idx_in_graph)=edge_idx_in_struct;
+        % if there were several edges with identical endpoints,
+        % we are done with this now and reset the
+        % counter
+        last_occur_idx = 0;
     else
+        % if there are several edges, preserve order of the info struct
+        % -------------------------------------------------------------
         edge_idx_in_struct = sort(edge_idx_in_struct);
         reorder_idx(edge_idx_in_graph)=edge_idx_in_struct(1);
         last_occur_idx = edge_idx_in_struct(1);
