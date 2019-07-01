@@ -27,4 +27,5 @@ edge_info.is_ce(delete_idx)        = [];
 edge_info.is_be(delete_idx)        = [];
 edge_info.labels(delete_idx)       = [];
 edge_info.colors(delete_idx)       = [];
+edge_info.device_info(delete_idx)  = [];
 [node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);

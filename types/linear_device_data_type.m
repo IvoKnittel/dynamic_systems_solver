@@ -1,6 +1,7 @@
 function device = linear_device_data_type()
 device.class        = [];
 device.R            = [];
+device.sigma        = [];
 device.L            = [];
 device.C            = [];
 device.R_is_dummy   = [];

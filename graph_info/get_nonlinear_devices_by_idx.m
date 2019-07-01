@@ -1,9 +1,11 @@
-function devices = get_nonlinear_devices_by_idx(devices, edge_info, edge_idx)
+function devices = get_nonlinear_devices_by_idx(edge_info, edge_idx)
+devices=[];
 for j=1:edge_info.is_bc(edge_idx)
     next_device=device_type();
     next_device.type = 'nonlinear';
     next_device.data = nonlinear_device_data_type(); 
     next_device.data.class          = 'bc';
+    next_device.data.info = [];%edge_info.is_bc(edge_idx).info;
     devices = [devices next_device];
 end
 for j=1:edge_info.is_be(edge_idx)   
@@ -11,6 +13,7 @@ for j=1:edge_info.is_be(edge_idx)
     next_device.type = 'nonlinear';
     next_device.data = nonlinear_device_data_type(); 
     next_device.data.class          = 'be';
+    next_device.data.info = [];%edge_info.is_bc(edge_idx).info;
     devices = [devices next_device];
     
 end
@@ -20,6 +23,7 @@ for j=1:edge_info.is_ce(edge_idx)
     next_device.data = nonlinear_device_data_type(); 
     next_device.data.class          = 'bc';
     next_device.base_idx        =  get_base_idx(edge_info, edge_idx);
+    next_device.data.info = [];%edge_info.is_bc(edge_idx).info;
     devices = [devices next_device];
 end
 

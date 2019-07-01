@@ -17,28 +17,34 @@ function [edge_info, node_info] = merge_multiple_edges_in_info(edge_info, node_i
 % it in parallel
  all_idx=1:length(edge_info.R);
  to_merge = all_idx >= idx_multiple(1) & all_idx <= idx_multiple(2);
- 
+
 if ~isempty(idx_multiple)
     if ~isempty(idx_multiple)
         new_edge_info              =  edge_info_type();
+        new_edge_info.R_is_dummy   =  0;
+        new_edge_info.C_is_dummy   =  0;
+        new_edge_info.L_is_dummy   =  0;
         new_edge_info.s_by_name    =  node_info.names(edge_info.s(idx_multiple(1)));
         new_edge_info.t_by_name    =  node_info.names(edge_info.t(idx_multiple(1)));
         
-        is_selected = to_merge & ~isnan(edge_info.R);
+        is_selected = to_merge & ~isnan(edge_info.R) & edge_info.R_is_dummy==0;
         if any(is_selected) 
             new_edge_info.R            =  1/sum(1./edge_info.R(is_selected));
+            new_edge_info.R_is_dummy   =  0;
         else
             new_edge_info.R  = NaN;
         end
-        is_selected = to_merge & ~isnan(edge_info.L);
+        is_selected = to_merge & ~isnan(edge_info.L) & edge_info.L_is_dummy==0;
         if any(is_selected) 
             new_edge_info.L            =  1/sum(1./edge_info.L(is_selected));
+            new_edge_info.L_is_dummy   =  0;
         else
             new_edge_info.L  = NaN;
         end
-        is_selected = to_merge & ~isnan(edge_info.C);
+        is_selected = to_merge & ~isnan(edge_info.C) & edge_info.C_is_dummy==0;
         if any(is_selected) 
             new_edge_info.C            =  1/sum(1./edge_info.C(is_selected));
+            new_edge_info.C_is_dummy   =  0;
         else
             new_edge_info.C  = NaN;
         end

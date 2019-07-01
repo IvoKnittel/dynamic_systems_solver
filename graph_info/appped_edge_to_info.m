@@ -18,3 +18,4 @@ function edge_info =  appped_edge_to_info(edge_info, new_edge_info)
     edge_info.is_bc       = [edge_info.is_bc        new_edge_info.is_bc];   
     edge_info.is_be       = [edge_info.is_be        new_edge_info.is_be];   
     edge_info.is_ce       = [edge_info.is_ce        new_edge_info.is_ce];  
+    edge_info.device_info = [edge_info.device_info  new_edge_info.device_info];

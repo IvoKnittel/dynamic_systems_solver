@@ -1,0 +1,25 @@
+function edge_info = add_transistor_capacitances(edge_info)
+trans_idx = find(edge_info.is_be | edge_info.is_bc | edge_info.is_ce);
+for j=1:length(trans_idx)
+    new_edge_info = edge_info_type();
+    new_edge_info.id          = 0;
+    new_edge_info.labels      = [];
+    new_edge_info.colors      = [];
+    new_edge_info.s           = edge_info.s(idx);
+    new_edge_info.t           = edge_info.t(idx);
+    new_edge_info.s_by_name   = edge_info.s_by_name(idx);
+    new_edge_info.t_by_name   = edge_info.t_by_name(idx);
+    new_edge_info.R           = Rt;        
+    new_edge_info.L           = 0;     
+    new_edge_info.C           = Ct;
+    edge_info.R_is_dummy      = false;
+    edge_info.L_is_dummy      = false;
+    edge_info.C_is_dummy      = false;
+    edge_info.is_base         = 0;
+    edge_info.is_collector    = 0;
+    edge_info.is_emitter      = 0;  
+    edge_info.is_bc           = 0;   
+    edge_info.is_be           = 0;   
+    edge_info.is_ce           = 0;  
+    edge_info =  appped_edge_to_info(edge_info, new_edge_info);
+end

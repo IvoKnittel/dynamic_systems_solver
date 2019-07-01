@@ -15,6 +15,7 @@ edge_info.is_emitter   = [];
 edge_info.is_bc        = [];
 edge_info.is_be        = [];
 edge_info.is_ce        = [];
+edge_info.device_info  = [];
 edge_info.id           = [];
 edge_info.labels       = [];
 edge_info.colors       = [];

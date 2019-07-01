@@ -1,29 +1,30 @@
 function all_edges = convert_edge_info_to_edge_type_array(edge_info)
 num_edges = length(edge_info.s);
-all_edges = rempmat(edge_type(),1,num_edges);
+all_edges = repmat(edge_type(),1,num_edges);
 for idx=1:num_edges
-    devices = edge_info_to_device(edge_info, idx);
-    all_edges(idx).devices = devices;
+    all_edges(idx).linear_device     = get_linear_device_by_idx(edge_info, idx);
+    all_edges(idx).nonlinear_devices = get_nonlinear_devices_by_idx(edge_info, idx);
 end
 
-function devices = edge_info_to_device(edge_info, idx)
-device = [];
+function linear_device = get_linear_device_by_idx(edge_info, idx)
+linear_device = [];
 assert(impedance_has_actual_value(edge_info.R(idx)));
-assert(xor(impedance_has_actual_value(edge_info.C(idx)), impedance_has_actual_value(edge_info.L(idx))));
-if impedance_has_actual_value([edge_info.R(idx) edge_info.L(idx) edge_info.C(idx)])
-    device                   = device_type();
-    device.type              = 'linear';
-    device.data              = linear_device_data_type();
-    device.data.R            = edge_info.R(idx);
-    device.data.L            = edge_info.L(idx);
-    device.data.C            = edge_info.C(idx);
-    device.data.R_is_dummy   = edge_info.R_is_dummy(idx);
-    device.data.L_is_dummy   = edge_info.L_is_dummy(idx);
-    device.data.C_is_dummy   = edge_info.C_is_dummy(idx);
-    device.var.j             = 0;
-    device.var.q             = 0;
-    device.time_constant     = NaN;
-    device.var.error         = false;
+if xor(impedance_has_actual_value(edge_info.C(idx)), impedance_has_actual_value(edge_info.L(idx)))
+    assert(edge_info.L(idx) == 0 & edge_info.C(idx)==0);
 end
-
-devices = [device get_nonlinear_devices_by_idx(edge_info, idx)];
+if impedance_has_actual_value([edge_info.R(idx) edge_info.L(idx) edge_info.C(idx)])
+    linear_device                   = device_type();
+    linear_device.type              = 'linear';
+    linear_device.data              = linear_device_data_type();
+    linear_device.data.R            = edge_info.R(idx);
+    linear_device.data.sigma        = 1/edge_info.R(idx);      
+    linear_device.data.L            = edge_info.L(idx);
+    linear_device.data.C            = edge_info.C(idx);
+    linear_device.data.R_is_dummy   = edge_info.R_is_dummy(idx);
+    linear_device.data.L_is_dummy   = edge_info.L_is_dummy(idx);
+    linear_device.data.C_is_dummy   = edge_info.C_is_dummy(idx);
+    linear_device.var.j             = 0;
+    linear_device.var.q             = 0;
+    linear_device.time_constant     = NaN;
+    linear_device.var.error         = false;
+end

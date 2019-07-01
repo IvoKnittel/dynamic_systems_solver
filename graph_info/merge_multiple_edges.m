@@ -33,18 +33,4 @@ for j=1:length(unique_ids)
    to_merge = multiple_idx_info(2,:) == unique_ids(j);
    [edge_info, node_info] = merge_multiple_edges_in_info(edge_info, node_info, multiple_idx_info(1,to_merge));  
 end
-
-% if ~isempty(multiple_idx_info)
-%     last_s          = multiple_idx_info(2,1);
-%     start_merge_idx = 1;
-%     for end_merge_idx = 1:size(multiple_idx_info,2)
-%         if multiple_idx_info(2,end_merge_idx) == last_s && end_merge_idx<size(multiple_idx_info,2)  
-%             last_s = edge_info.s(end_merge_idx);
-%             continue
-%         end
-%         [edge_info, node_info] = merge_multiple_edges_in_info(edge_info, node_info, multiple_idx_info(1,start_merge_idx:end_merge_idx));     
-%         last_s = edge_info.s(end_merge_idx);
-%         start_merge_idx = end_merge_idx+1;
-%     end
-% end
 [edge_info, node_info] = delete_edges_from_info(edge_info, node_info, multiple_idx_info(1,:));

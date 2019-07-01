@@ -10,7 +10,7 @@ function plot_config = get_plot_config(node_info)
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 plot_config.voltage_select= [false      true          true       true       true        true     false ];   
-plot_config.current.select_matrix=zeros(node_info.num_nodes, node_info.num_nodes);
+plot_config.current.select_matrix=zeros(length(node_info.names), length(node_info.names));
 plot_config.current.select_matrix(2,1)=1; % left in
 plot_config.current.select_matrix(4,2)=2; % main up to main lo
 plot_config.current.select_matrix(4,3)=3; % left base
