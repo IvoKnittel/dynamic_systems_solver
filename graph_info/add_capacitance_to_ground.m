@@ -1,4 +1,4 @@
-function edge_info =  add_capacitance_to_ground(node_info, edge_info, time_epsilon, C_to_ground)
+function [node_info, edge_info] =  add_capacitance_to_ground(node_info, edge_info, time_epsilon, C_to_ground)
 % connects all floating nodes to ground by an RC with infinitesimal time constant
 % ----------------------------------------------------------------------
 % INPUTS:
@@ -41,3 +41,7 @@ for j=1:length(floating_idx)
     new_edge_info.id           =  0;
     edge_info                  =  appped_edge_to_info(edge_info, new_edge_info);
 end
+
+[node_info, edge_info] =  init_cicuit_nodes(node_info, edge_info);
+edge_info              =  reorder_edge_info(edge_info, node_info.names);
+[node_info, edge_info] =  init_cicuit_nodes(node_info, edge_info);
