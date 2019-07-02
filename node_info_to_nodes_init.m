@@ -1,13 +1,22 @@
 function nodes = node_info_to_nodes_init(node_info, edges)
-nodes = rempmat(node_type(),1,length(node_info.names));
+% gets nodes from node_info struct, calculates the capacitance and default
+% time constant of each circuit node
+% ----------------------------------------------------------------------
+% INPUTS:
+% node_info           ... node_info_type
+% edges               ... array of edge type
+% 
+% OUTPUTS:
+% nodes               ... array of cicuit_node_type
+% ----------------------------------------------
+nodes = rempmat(cicuit_node_type(),1,length(node_info.names));
 for crt_node=1:length(node_info.names)
-  node_info.active     = node_info.active(crt_node);
-
-  crt_edges         = [edges.s]== crt_node;
-  crt_edges_reverse         = [edges.t]== crt_node;
+  node_info.active    = node_info.active(crt_node);
+  crt_edges           = [edges.s]== crt_node;
+  crt_edges_reverse   = [edges.t]== crt_node;
     
   for idx =1:length(crt_edges)
-     nodes(crt_nodes).C =   nodes(crt_nodes).C + edges(crt_edges(idx)).linear_device.data.C;
+     nodes(crt_nodes).C = nodes(crt_nodes).C + edges(crt_edges(idx)).linear_device.data.C;
   end
   
   sigma=0;

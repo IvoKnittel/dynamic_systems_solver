@@ -48,12 +48,15 @@ if ~isempty(idx_multiple)
         else
             new_edge_info.C  = NaN;
         end
-        new_edge_info.is_base      =  NaN(1,length(idx_multiple));
-        new_edge_info.is_collector =  NaN(1,length(idx_multiple));
-        new_edge_info.is_emitter   =  NaN(1,length(idx_multiple));
-        new_edge_info.is_bc        =  sum(edge_info.is_bc(idx_multiple));
-        new_edge_info.is_be        =  sum(edge_info.is_be(idx_multiple));
-        new_edge_info.is_ce        =  sum(edge_info.is_ce(idx_multiple));
+        new_edge_info.is_base        =  NaN(1,length(idx_multiple));
+        new_edge_info.is_collector   =  NaN(1,length(idx_multiple));
+        new_edge_info.is_emitter     =  NaN(1,length(idx_multiple));
+        new_edge_info.is_bc          =  sum(edge_info.is_bc(idx_multiple));
+        new_edge_info.is_be          =  sum(edge_info.is_be(idx_multiple));
+        new_edge_info.is_ce          =  sum(edge_info.is_ce(idx_multiple));
+        new_edge_info.device_info    = nonlinear_device_data_type();
+        new_edge_info.device_info.Ct = [edge_info.device_info(idx_multiple).Ct];
+        new_edge_info.device_info.Rt = [edge_info.device_info(idx_multiple).Rt];
         edge_info =  appped_edge_to_info(edge_info, new_edge_info);
     end
 end

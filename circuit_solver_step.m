@@ -1,4 +1,16 @@
 function [node_info, nodes, edges] = circuit_solver_step(node_info, nodes, edges)
+% cicuit simulation taking one external signal timestep
+% ----------------------------------------------------------------------
+% INPUTS:
+% node_info           ... node info type
+% nodes               ... array of circuit node type
+% edges               ... array of circuit edge type
+% 
+% OUTPUTS:
+% node_info           ... node info type
+% nodes               ... array of circuit node type
+% edges               ... array of circuit edge type
+% ----------------------------------------------
 prev_active_node_idx=[];
 
 while any([egdes.var.error])

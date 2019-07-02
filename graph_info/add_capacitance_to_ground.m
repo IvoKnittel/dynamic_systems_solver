@@ -39,6 +39,7 @@ for j=1:length(floating_idx)
     new_edge_info.is_be        =  false;
     new_edge_info.is_ce        =  false;
     new_edge_info.id           =  0;
+    new_edge_info.device_info  =  nonlinear_device_data_type();
     edge_info                  =  appped_edge_to_info(edge_info, new_edge_info);
 end
 

@@ -21,9 +21,10 @@ if ~isempty(id_deleted)
     new_edge_info              = edge_info_type();
     new_edge_info.s_by_name    =  names(neigbor_node_pair(1));
     new_edge_info.t_by_name    =  names(neigbor_node_pair(2));
-    new_edge_info.R            =  edge_info.R(id_deleted) + edge_info.R(id_other);        
-    new_edge_info.L            =  edge_info.L(id_deleted) + edge_info.L(id_other);      
-    new_edge_info.C            =  edge_info.C(id_deleted) + edge_info.C(id_other);
+
+    new_edge_info.R = merge_impedance(edge_info.R(id_deleted), edge_info.R(id_other));    
+    new_edge_info.L = merge_impedance(edge_info.L(id_deleted), edge_info.L(id_other));    
+    new_edge_info.C = merge_impedance(edge_info.C(id_deleted), edge_info.C(id_other));    
 
     idx = [id_deleted id_other];
     sel_idx = impedance_has_actual_value([edge_info.R_is_dummy(id_deleted) edge_info.R_is_dummy(id_other)]);
@@ -43,7 +44,8 @@ if ~isempty(id_deleted)
     new_edge_info.is_be        =  double(is_base     &  is_emitter);
     new_edge_info.is_ce        =  double(is_emitter  &  is_collector);
     new_edge_info.id           = 0;
-    edge_info                  =  appped_edge_to_info(edge_info, new_edge_info);
+    new_edge_info.device_info  = edge_info.device_info(id_deleted);
+    edge_info                  = appped_edge_to_info(edge_info, new_edge_info);
 end
 
 function id_deleted = get_edge_to_delete(edge_info, node1, node2)            
@@ -51,3 +53,12 @@ id_deleted = find(edge_info.s==node1 & edge_info.t == node2);
 if isempty(id_deleted)
    id_deleted = find(edge_info.t==node1 & edge_info.s ==node2);                
 end
+
+function out = merge_impedance(imp1,imp2)
+sigma = 1./[imp1 imp2];
+sigma_valid = sigma(~isnan(sigma));
+if isempty(sigma_valid)
+    out = NaN;
+else
+    out  = 1/sum(sigma_valid);
+end    
