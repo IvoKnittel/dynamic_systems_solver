@@ -15,9 +15,8 @@ function circuitsolver()
 % led
 [node_info_disp, edge_info_disp] = schmitt();
 
-[node_info_disp, edge_info_disp] = init_cicuit_nodes(node_info_disp, edge_info_disp);
-[edge_info_disp] = init_cicuit_edges(node_info_disp, edge_info_disp);
-[node_info_disp, edge_info_disp] = init_cicuit_nodes(node_info_disp, edge_info_disp);
+[node_info_disp, edge_info_disp] = init_circuit_nodes(node_info_disp, edge_info_disp);
+[edge_info_disp]                 = init_circuit_edges(node_info_disp, edge_info_disp);
 
 % Display circuit to be simulated
 % -------------------------------
@@ -37,18 +36,24 @@ comp_params.time_epsilon      = 1e-15;
 comp_params.C_to_ground       = 1e-15;
 comp_params.voltage_tolerance = 1e-3;
 comp_params.dummy_influence_threshold =1e-2;
-plot_config = get_plot_config(node_info_disp);
+%plot_config = get_plot_config(node_info_disp);
 
 % convert from network to display to network to solve
 % ---------------------------------------------------
-%[node_info, edge_info] =  add_capacitance_to_ground(node_info_disp, edge_info_disp, comp_params.time_epsilon, comp_params.C_to_ground);
+[node_info, edge_info] =  add_capacitance_to_ground(node_info_disp, edge_info_disp, comp_params.time_epsilon, comp_params.C_to_ground);
 
-[node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp);
+[node_info, edge_info] = get_graph_info_for_calculation(node_info, edge_info);
 
-edge_info = add_transistor_capacitances(edge_info);
-[node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);
+edge_info              = add_transistor_capacitances(edge_info);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
 edge_info              =  reorder_edge_info(edge_info, node_info.names);
-[node_info, edge_info] = init_cicuit_nodes(node_info, edge_info);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+
+[node_info, edge_info] =  model_voltage_sources_as_capacitances(node_info, edge_info);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+edge_info              =  reorder_edge_info(edge_info, node_info.names);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info); 
 
 % display the curcuit ot be solved
 % --------------------------------
@@ -62,11 +67,11 @@ plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_
 %ivec=[];
 %uvec=[];
 signal.idx = strcmp(node_info_disp.names,'signal');
-edges = convert_edge_info_to_edge_type_array(edge_info);
+edges = edge_info.devices;
 nodes = node_info_to_nodes_init(node_info, edges);
 nodes(strcmp(node_info.names,'supply')).is_active = true;
 for j = 2:length(signal.time)-1
-    [node_info, nodes, edges] = circuit_solver_step(node_info, nodes, edges);
+    [node_info, nodes, edges] = circuit_solver_step(node_info, nodes, edges, comp_params);
     
     % Set the signal voltage active because it is changing
     % ----------------------------------------------------

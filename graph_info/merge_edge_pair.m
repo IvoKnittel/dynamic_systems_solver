@@ -44,6 +44,8 @@ if ~isempty(id_deleted)
     new_edge_info.is_be        =  double(is_base     &  is_emitter);
     new_edge_info.is_ce        =  double(is_emitter  &  is_collector);
     new_edge_info.id           = 0;
+    new_edge_info.id           = edge_info.next_unique_id;
+    edge_info.next_unique_id   = edge_info.next_unique_id + 1;    
     new_edge_info.device_info  = edge_info.device_info(id_deleted);
     edge_info                  = appped_edge_to_info(edge_info, new_edge_info);
 end

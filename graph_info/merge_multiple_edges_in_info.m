@@ -54,9 +54,11 @@ if ~isempty(idx_multiple)
         new_edge_info.is_bc          =  sum(edge_info.is_bc(idx_multiple));
         new_edge_info.is_be          =  sum(edge_info.is_be(idx_multiple));
         new_edge_info.is_ce          =  sum(edge_info.is_ce(idx_multiple));
-        new_edge_info.device_info    = nonlinear_device_data_type();
+        new_edge_info.device_info    = nonlinear_device_info_type();
         new_edge_info.device_info.Ct = [edge_info.device_info(idx_multiple).Ct];
         new_edge_info.device_info.Rt = [edge_info.device_info(idx_multiple).Rt];
+        new_edge_info.id           = edge_info.next_unique_id;
+        edge_info.next_unique_id   = edge_info.next_unique_id + 1;    
         edge_info =  appped_edge_to_info(edge_info, new_edge_info);
     end
 end

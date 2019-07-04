@@ -1,4 +1,4 @@
-[edges, node_info] = update_edge_states(edges, node_info, comp_params);
+function [edges, node_info] = update_edge_states(edges, nodes, node_info, comp_params)
 % node_info           ... node info type
 % nodes               ... array of circuit node type
 % edges               ... array of circuit edge type

@@ -9,23 +9,19 @@ function nodes = node_info_to_nodes_init(node_info, edges)
 % OUTPUTS:
 % nodes               ... array of cicuit_node_type
 % ----------------------------------------------
-nodes = rempmat(cicuit_node_type(),1,length(node_info.names));
+nodes = repmat(circuit_node_type(),1,length(node_info.names));
 for crt_node=1:length(node_info.names)
-  node_info.active    = node_info.active(crt_node);
-  crt_edges           = [edges.s]== crt_node;
-  crt_edges_reverse   = [edges.t]== crt_node;
-    
+  node_info.active    = false;
+  crt_edges           = find([edges.s]== crt_node);
+  
   for idx =1:length(crt_edges)
-     nodes(crt_nodes).C = nodes(crt_nodes).C + edges(crt_edges(idx)).linear_device.data.C;
+     if ~isempty(edges(crt_edges(idx)).linear_device) 
+        nodes(crt_node).C = nodes(crt_node).C + edges(crt_edges(idx)).linear_device.data.C;
+     end
   end
   
-  sigma=0;
-  for idx =1:length(crt_edges_reverse)
-     sigma = sigma +  edges(crt_edges_reverse(idx)).linear_device.data.sigma;
-  end
-  
-  nodes(crt_nodes).timeconstant         = C/sigma;
-  nodes(crt_nodes).invC                 = 1/C;
-  nodes(crt_nodes).var.timeconstant     = NaN;  
-  nodes(crt_nodes).var.potential        = NaN;
+  nodes(crt_node).timeconstant         = NaN;
+  nodes(crt_node).invC                 = 1/nodes(crt_node).C;
+  nodes(crt_node).var.timeconstant     = NaN;  
+  nodes(crt_node).var.potential        = NaN;
 end

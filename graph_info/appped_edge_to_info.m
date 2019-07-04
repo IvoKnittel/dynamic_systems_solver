@@ -8,7 +8,7 @@ function edge_info =  appped_edge_to_info(edge_info, new_edge_info)
 % edge_info         ... edge_info_type
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
-    edge_info.id          = [edge_info.id           length(new_edge_info.s_by_name)+(1:length(new_edge_info.s_by_name))];
+    edge_info.id          = [edge_info.id           new_edge_info.id];
     edge_info.labels      = [edge_info.labels       new_edge_info.labels];
     edge_info.colors      = [edge_info.colors       new_edge_info.colors];
     edge_info.s           = [edge_info.s            new_edge_info.s];

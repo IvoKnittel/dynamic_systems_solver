@@ -12,33 +12,25 @@ devices=[];
 for j=1:length(find(edge_info.is_bc(edge_idx)>0))
     next_device=device_type();
     next_device.type = 'nonlinear';
-    next_device.data = edge_info.device_info(edge_idx(j)); 
-    next_device.data.Ct = 0; % this is already externalized 
-    next_device.data.Rt = 0; %
-    next_device.data.class          = 'bc';
-    next_device.data.info = [];
+    next_device.data = nonlinear_device_data_type();
+    next_device.data.base_idx = NaN; 
+    next_device.data.class = 'bc';
     devices = [devices next_device];
 end
 for j=1:length(find(edge_info.is_be(edge_idx)>0))
     next_device=device_type();
     next_device.type = 'nonlinear';
-    next_device.data = edge_info.device_info(edge_idx(j)); 
-    next_device.data.Ct = 0; % this is already externalized 
-    next_device.data.Rt = 0; %
+    next_device.data = nonlinear_device_data_type();
+    next_device.data.base_idx = NaN; 
     next_device.data.class          = 'be';
-    next_device.data.info = [];
     devices = [devices next_device];
-    
 end
 for j=1:length(find(edge_info.is_ce(edge_idx)>0))
     next_device=device_type();
     next_device.type = 'nonlinear';
-    next_device.data = edge_info.device_info(edge_idx(j)); 
-    next_device.data.Ct = 0; % this is already externalized 
-    next_device.data.Rt = 0; %
+    next_device.data = nonlinear_device_data_type();
     next_device.data.class          = 'ce';
-    next_device.base_idx        =  get_base_idx(edge_info, edge_idx);
-    next_device.data.info = [];
+    next_device.data.base_idx       =  get_base_idx(edge_info, edge_idx);
     devices = [devices next_device];
 end
 
