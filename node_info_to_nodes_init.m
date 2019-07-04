@@ -11,7 +11,6 @@ function nodes = node_info_to_nodes_init(node_info, edges)
 % ----------------------------------------------
 nodes = repmat(circuit_node_type(),1,length(node_info.names));
 for crt_node=1:length(node_info.names)
-  node_info.active    = false;
   crt_edges           = find([edges.s]== crt_node);
   
   for idx =1:length(crt_edges)
@@ -19,9 +18,8 @@ for crt_node=1:length(node_info.names)
         nodes(crt_node).C = nodes(crt_node).C + edges(crt_edges(idx)).linear_device.data.C;
      end
   end
-  
   nodes(crt_node).timeconstant         = NaN;
   nodes(crt_node).invC                 = 1/nodes(crt_node).C;
   nodes(crt_node).var.timeconstant     = NaN;  
-  nodes(crt_node).var.potential        = NaN;
+  nodes(crt_node).var.potential        = 0;
 end

@@ -26,6 +26,7 @@ plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLab
 
 % Supply voltages and Signal
 % --------------
+supply_voltage = 15;
 [signal.data, signal.time]=generate_signal_input();
 signal.timestep = signal.time(2)-signal.time(1);
 
@@ -70,13 +71,16 @@ signal.idx = strcmp(node_info_disp.names,'signal');
 edges = edge_info.devices;
 nodes = node_info_to_nodes_init(node_info, edges);
 nodes(strcmp(node_info.names,'supply')).is_active = true;
+nodes(strcmp(node_info.names,'supply')).var.potential = supply_voltage;
+edges = init_nonlinear_device_voltage_ranges(nodes, edges);
+
 for j = 2:length(signal.time)-1
-    [node_info, nodes, edges] = circuit_solver_step(node_info, nodes, edges, comp_params);
+    [nodes, edges] = circuit_solver_step(nodes, edges, comp_params);
     
     % Set the signal voltage active because it is changing
     % ----------------------------------------------------
-    nodes(strcmp(node_info.names,'signal')).is_active = true;
-    node_info.var.voltages(signal.idx,end) = signal.data(j);
+    nodes(strcmp(node_info.names,'signal')).is_active     = true;
+    nodes(strcmp(node_info.names,'signal')).var.potential = signal.data(j);
 %    ivec = [ivec 1000*get_current_vector([edges.var.j],plot_config.current_select_matrix)'];
 %    uvec = [uvec node_info.var.voltages];
 end
