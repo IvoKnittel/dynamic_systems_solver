@@ -28,13 +28,13 @@ node_charge_change_rate      = additive_edges_to_nodes(nodes, edges, edge_curren
 % get for each node the charge that would result from those currents
 % and the  time constants
 % -----------------------------------------------------------------------
-node_charge_change_unlimited = node_charge_change_rate.*node_time_constants;
+node_voltage_change_unlimited = node_charge_change_rate.*node_time_constants.*[nodes.invC];
 
 % get voltage ranges for each active node such that there will be
 % no surprises from nonlinear devices
-max_charge_change            =  pessimist_edges_to_nodes(nodes, edges, edge_voltage_ranges).*[nodes.invC];
-node_charge_change_limited   =  min(max_charge_change, node_charge_change_unlimited);
-node_charge_change_limited   =  max(-max_charge_change, node_charge_change_limited);
+max_voltage_change            =  pessimist_edges_to_nodes(nodes, edges, edge_voltage_ranges);
+node_voltage_change_limited   =  min(max_voltage_change, node_voltage_change_unlimited);
+node_voltage_change_limited   =  max(-max_voltage_change, node_voltage_change_limited);
 
-tau_limited                  = node_time_constants*node_charge_change_limited./node_charge_change_unlimited;
+tau_limited                  = node_time_constants.*node_voltage_change_limited./node_voltage_change_unlimited;
 tau_chosen                   = min(tau_limited);

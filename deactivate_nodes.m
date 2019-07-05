@@ -9,5 +9,6 @@ function nodes = deactivate_nodes(nodes, edges)
 % nodes               ... array of circuit_node_type
 % ----------------------------------------------
 for j=1:length(nodes)
-   nodes(j).is_active = any(edges(get_from_edges(edges, 'edges_to_node', j)).error);
+   crt_edges_idx = get_from_edges(edges, 'edges_to_node', j); 
+   nodes(j).is_active = any([edges(crt_edges_idx).error]);
 end

@@ -55,6 +55,16 @@ edge_info              =  reorder_edge_info(edge_info, node_info.names);
 [node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
 edge_info              =  reorder_edge_info(edge_info, node_info.names);
 [node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+
+% 4. : Multiple edges are merged.
+% -------------------------------
+[edge_info, node_info] = merge_multiple_edges(edge_info, node_info);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+edge_info = reorder_edge_info(edge_info, node_info.names);
+[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+
+node_info.num_nodes = length(node_info.names);  
+
 edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info, comp_params); 
 
 edges = edge_info.devices;

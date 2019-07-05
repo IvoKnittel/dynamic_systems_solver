@@ -9,7 +9,7 @@ function edge_idx = get_egdes_by_node(edges, node_idx)
 % edge_idx       ... array of edge indices
 % ----------------------------------------------
 edge_idx = [];
-for j=1:node_idx
+for j=1:length(node_idx)
    edge_idx = [edge_idx find([edges.s] == node_idx(j))];
    edge_idx = [edge_idx find([edges.t] == node_idx(j))];
 end

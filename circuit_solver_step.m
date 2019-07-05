@@ -36,23 +36,20 @@ while any([nodes.is_active]) || any([edges.error])
         % -----------------------------------------------------------------------
         timestep = get_global_time_constant(edges, nodes, comp_params);
         
-        % get the current through devices
+        % get the current through devices and update device internal states
         % ----------------------------------------------------------------------
         node_voltages = get_node_voltages(nodes);
-        currents = get_edge_currents_unsafe(edges, node_voltages, comp_params, timestep);
+        [edge_currents, ~, ~, edges]  = get_edge_currents_unsafe(edges, node_voltages, comp_params, timestep);        
+        
+        % get currents into nodes from currents through edges
+        % ---------------------------------------------------
+        node_currents = additive_edges_to_nodes(nodes, edges, edge_currents);
         
         % update node voltages
-        % --------------------
-        node_charge_change_rate = get_node_charge_change_rate(nodes, currents);
-        nodes = set_node_voltages(nodes, timestep.*[nodes.invC].*node_charge_change_rate);
-        
-        % update internal states of the
-        % devices (capacitor charges, inductive current, nonlinear device range)
-        % ----------------------------------------------------------------------
-        edges                        = update_edges(edges, currents, voltages, tau, comp_params);
-
-        [nodes, new_node_activation] = update_node_activation_state(nodes, [edges.error], prev_node_voltages, comp_params);
-        
+        % -----------------------------------------------------------------------
+        node_voltages = node_voltages + timestep*node_currents.*[nodes.invC];
+        set_node_voltages(nodes, node_voltages);
+        [nodes, new_node_activation] = update_node_activation_state(nodes, edges, prev_node_voltages, comp_params);
     end
     prev_active_node_idx = active_node_idx;
 end

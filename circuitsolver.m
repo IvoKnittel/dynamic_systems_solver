@@ -59,8 +59,8 @@ plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_
 
 % Set the supply voltage active because of initial switch-on
 % ----------------------------------------------------------
-%ivec=[];
-%uvec=[];
+ivec=[];
+uvec=[];
 signal.idx = strcmp(node_info_disp.names,'signal');
 
 for j = 2:length(signal.time)-1
@@ -70,7 +70,7 @@ for j = 2:length(signal.time)-1
     % ----------------------------------------------------
     nodes(strcmp(node_info.names,'signal')).is_active     = true;
     nodes(strcmp(node_info.names,'signal')).var.potential = signal.data(j);
-%    ivec = [ivec 1000*get_current_vector([edges.var.j],plot_config.current_select_matrix)'];
-%    uvec = [uvec node_info.var.voltages];
+    ivec = [ivec 1000*get_current_vector([edges.var.j],plot_config.current_select_matrix)'];
+    uvec = [uvec node_info.var.voltages];
 end
-%display_circuit_simulation_result(ivec, uvec, node_info, edge_info, plot_config)
+display_circuit_simulation_result(ivec, uvec, node_info, edge_info, plot_config)

@@ -14,4 +14,4 @@ function [nodes, new_node_activation] = update_node_activation_state(nodes, edge
 prev_node_is_active = [nodes.is_active];
 nodes               = deactivate_nodes(nodes, edges);
 nodes               = activate_nodes(nodes, prev_node_voltages, comp_params);
-new_node_activation = ([nodes.is_active] & ~prev_node_is_active);
+new_node_activation = any([nodes.is_active] & ~prev_node_is_active);
