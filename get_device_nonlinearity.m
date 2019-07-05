@@ -22,7 +22,7 @@ function linear_voltage_range = get_device_nonlinearity(device_data, node_potent
 probe_delta_u.val         = comp_params.probe_delta_u;
 probe_delta_u.sign_change = NaN;
 done = false;
-linear_voltage_range_abs = NaN;
+linear_voltage_range = NaN;
 
 while ~done && probe_delta_u.val(end) < comp_params.max_nonlinearity_voltage_range
     
@@ -33,8 +33,7 @@ while ~done && probe_delta_u.val(end) < comp_params.max_nonlinearity_voltage_ran
     % break at the first sign change i.e. at the first range decrease after a sequence of increases, or vice versa.
     % -------------------------------------------------------------------------------------------------------------
     if length(probe_delta_u.sign_change) > 1 && probe_delta_u.sign_change(end) ~= probe_delta_u.sign_change(2)
-        linear_voltage_range_abs = probe_delta_u.val(end-1);
+        linear_voltage_range = probe_delta_u.val(end-1);
         done = true;
     end
 end
-linear_voltage_range = [linear_voltage_range_abs; linear_voltage_range_abs];

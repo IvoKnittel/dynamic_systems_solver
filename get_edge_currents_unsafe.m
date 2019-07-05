@@ -1,4 +1,4 @@
-function [currents, tau, edges] = get_edge_currents_unsafe(edges, node_voltages, comp_params, tau_max)
+function [currents, tau, voltage_ranges, edges] = get_edge_currents_unsafe(edges, node_voltages, comp_params, tau_max)
 % get currents for all edges from voltages, result may be out of voltage bounds
 % ----------------------------------------------------------------------
 % INPUTS:
@@ -13,9 +13,9 @@ function [currents, tau, edges] = get_edge_currents_unsafe(edges, node_voltages,
 % tau_chosen    ... chosen time step
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
-currents = zeros(1,length(edges));
-tau      = zeros(1,length(edges));
-
+currents       = NaN(1,length(edges));
+tau            = NaN(1,length(edges));
+voltage_ranges = NaN(1,length(edges));
 for j= 1:length(edges)
-[edges(j).devices, currents(j), tau(j)] = get_edge_current([edges(j).linear_device edges(j).nonlinear_devices], node_voltages, edges(j).s, edges(j).t, comp_params, tau_max);
+[edges(j).devices, currents(j), tau(j), voltage_ranges(j)] = get_edge_current([edges(j).linear_device edges(j).nonlinear_devices], node_voltages, edges(j).s, edges(j).t, comp_params, tau_max);
 end

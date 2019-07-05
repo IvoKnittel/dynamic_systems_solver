@@ -1,4 +1,4 @@
-function  [device, current, time_constant, error] = current_single_device(device, node_voltages, source_idx, sink_idx, comp_params, max_time_constant)
+function  [device, current, time_constant, voltage_range, error] = current_single_device(device, node_voltages, source_idx, sink_idx, comp_params, max_time_constant)
 % gets current from node voltages and constant impedance and device
 % matrices
 % ----------------------------------------------------------------------
@@ -34,9 +34,11 @@ function  [device, current, time_constant, error] = current_single_device(device
 current       = 0;
 time_constant = NaN;
 error         = false;
+voltage_range = NaN;
 switch device.type
     case 'nonlinear'
          current       = get_current_of_transistor_device(device.data.class, node_voltages, source_idx, sink_idx, device.data.base_idx);
+         voltage_range = get_device_nonlinearity(device.data, node_voltages, source_idx, sink_idx, comp_params);
          time_constant = min(max_time_constant, comp_params.time_epsilon);
          error         = false;
     case 'linear'   
