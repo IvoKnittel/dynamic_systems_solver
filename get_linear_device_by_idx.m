@@ -18,7 +18,6 @@ if any(is_valid)
     linear_device.data.C_is_dummy   = edge_info.C_is_dummy(idx);
     linear_device.var.j             = 0;
     linear_device.var.q             = 0;
-    linear_device.time_constant     = set_device_default_time_constant(linear_device);
     linear_device.var.error         = false;
     
     if impedance_has_actual_value(edge_info.R(idx)) && ~any(impedance_has_actual_value([edge_info.L(idx) edge_info.C(idx)]))
@@ -36,7 +35,7 @@ if any(is_valid)
         linear_device.data.R            = dummy_resistor;
         linear_device.data.R_is_dummy   = true;
     end
-    
+    linear_device.time_constant     = set_device_default_time_constant(linear_device);
 end
 
 if isinf(edge_info.C(idx))

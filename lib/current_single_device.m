@@ -66,4 +66,12 @@ switch device.type
            current       = (voltage - device.var.q/device.data.C)/device.data.R;
            device.var.q  = current*time_step;
         end
+        
+        if isinf(device.data.C)
+           % flag error if capacitor is still charging
+           % --------------------------------------------------------------
+           error         = false;
+           current       = NaN;
+           device.var.q  = NaN;
+        end
 end
