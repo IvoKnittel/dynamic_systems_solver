@@ -1,4 +1,4 @@
-function [node_info, edge_info] = get_graph_info_for_calculation(node_info, edge_info, comp_params)
+function [nodes, edges, node_info, edge_info] = get_graph_info_for_calculation(node_info, edge_info, comp_params, supply_voltage)
 % node info and edge info for pretty display of the circuit
 % is converted into node info and edge info for computation
 % 1. : Floating nodes are each connected to ground by a minuscule capacitance
@@ -11,6 +11,7 @@ function [node_info, edge_info] = get_graph_info_for_calculation(node_info, edge
 % INPUTS:
 % node_info     ... node_info_type
 % edge_info     ... edge_info_type
+% supply_voltage
 % OUTPUTS:
 % node_info     ... node_info_type
 % edge_info     ... edge_info_type
@@ -55,3 +56,9 @@ edge_info              =  reorder_edge_info(edge_info, node_info.names);
 edge_info              =  reorder_edge_info(edge_info, node_info.names);
 [node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
 edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info); 
+
+edges = edge_info.devices;
+nodes = node_info_to_nodes_init(node_info, edges);
+nodes(strcmp(node_info.names,'supply')).is_active = true;
+nodes(strcmp(node_info.names,'supply')).var.potential = supply_voltage;
+edges = init_nonlinear_device_voltage_ranges(nodes, edges);

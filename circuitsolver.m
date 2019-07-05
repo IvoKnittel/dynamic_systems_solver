@@ -9,28 +9,21 @@ function circuitsolver()
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 
-% Define circuit to be simulated
+% 1. Define circuit to be simulated
 % -------------------------------
 %[t, ut, u0, uvaridx, u_names, voltage_select, adja_mat, R_mat, cap_mat, L_mat, current_select_matrix, current_names, current_select]=coaxial();
 % led
 [node_info_disp, edge_info_disp] = schmitt();
-
 [node_info_disp, edge_info_disp] = init_circuit_nodes(node_info_disp, edge_info_disp);
 [edge_info_disp]                 = init_circuit_edges(node_info_disp, edge_info_disp);
 
-% Display circuit to be simulated
-% -------------------------------
-figure(1);
-G = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
-plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
-
-% Supply voltages and Signal
+% 2. Supply voltages and Signal
 % --------------
 supply_voltage = 15;
 [signal.data, signal.time]=generate_signal_input();
 signal.timestep = signal.time(2)-signal.time(1);
 
-% Set simulation parameters
+% 3. Set simulation parameters
 % ----------------------------
 comp_params.eps               = 1e-89;
 comp_params.time_epsilon      = 1e-15;
@@ -42,10 +35,21 @@ comp_params.max_nonlinearity_voltage_range = 10;
 comp_params.time_constant_factor           = 0.2;
 comp_params.nonlinearity_threshold         = 0.15;
 
+% 4. format output display
+% ----------------------------
 %plot_config = get_plot_config(node_info_disp);
-[node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params);
 
-% display the circuit ot be solved
+% 5. Display circuit to be simulated
+% -------------------------------
+figure(1);
+G = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
+plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
+
+% 6. Convert from dispplay to computation form
+% ---------------------------------------------
+[nodes, edges, node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage);
+
+% 7. Display the circuit to be solved
 % --------------------------------
 figure(2);
 G = graph(edge_info.s,edge_info.t,1, node_info.names);
@@ -53,15 +57,9 @@ plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_
 
 % Set the supply voltage active because of initial switch-on
 % ----------------------------------------------------------
-
 %ivec=[];
 %uvec=[];
 signal.idx = strcmp(node_info_disp.names,'signal');
-edges = edge_info.devices;
-nodes = node_info_to_nodes_init(node_info, edges);
-nodes(strcmp(node_info.names,'supply')).is_active = true;
-nodes(strcmp(node_info.names,'supply')).var.potential = supply_voltage;
-edges = init_nonlinear_device_voltage_ranges(nodes, edges);
 
 for j = 2:length(signal.time)-1
     [nodes, edges] = circuit_solver_step(nodes, edges, comp_params);
