@@ -1,4 +1,4 @@
-function  [device, current, time_constant, error] = current_single_device(device, node_voltages, source_idx, sink_idx, comp_params)
+function  [device, current, time_constant, error] = current_single_device(device, node_voltages, source_idx, sink_idx, comp_params, max_time_constant)
 % gets current from node voltages and constant impedance and device
 % matrices
 % ----------------------------------------------------------------------
@@ -34,35 +34,34 @@ function  [device, current, time_constant, error] = current_single_device(device
 current       = 0;
 time_constant = NaN;
 error         = false;
+switch device.type
+    case 'nonlinear'
+         current       = get_current_of_transistor_device(device.data.class, node_voltages, source_idx, sink_idx, device.data.base_idx);
+         time_constant = min(max_time_constant, comp_params.time_epsilon);
+         error         = false;
+    case 'linear'   
+        voltage = node_voltages(source_idx) - node_voltages(sink_idx);
+        if impedance_has_actual_value(device.data.L)
+           assert(impedance_has_actual_value(device.data.C));
 
-if ~isempty(device.nonlinear)
-     current       = get_current_of_transistor_device(device.nonlinear.class, node_voltages, source_idx, sink_idx, device.nonlinear.base_idx);
-     time_constant = comp_params.time_epsilon;
-     error         = false;
-     return
-end
+           % Use formula for inductance voltage
+           % voltage = -device.data.L*(current - device.data.var.j)/time_constant -device.data.R*current;
 
-voltage = node_voltages(source_idx) - node_voltages(sink_idx);
-if impedance_has_actual_value(device.L)
-   assert(impedance_has_actual_value(device.C));
+           % flag error if current depends significantly on dummy impedance
+           % --------------------------------------------------------------
+           time_constant = min(max_time_constant, device.data.L/device.data.R); 
+           error         = device.data.L_is_dummy && device.data.L/time_constant > device.data.R*comp_params.dummy_influence_threshold;
+           current       = device.data.var.j - (voltage + device.data.R*current)*time_constant/device.data.L;
+           device.var.j  = current;
 
-   % Use formula for inductance voltage
-   % voltage = -device.L*(current - device.var.j)/time_constant -device.R*current;
-
-   % flag error if current depends significantly on dummy impedance
-   % --------------------------------------------------------------
-   error = device.L_is_dummy && device.L/time_constant > device.R*comp_params.dummy_influence_threshold;
-
-   current = device.var.j - (voltage+device.R*current)*time_constant/device.L;
-   device.var.j = current;
-   time_constant = device.L/device.R; 
-end
-if impedance_has_actual_value(device.C)
-   assert(impedance_has_actual_value(device.L));
-   % flag error if capacitor is still charging
-   % --------------------------------------------------------------
-   error = device.C_is_dummy && abs(voltage - device.var.q/device.C) > abs(voltage)*comp_params.dummy_influence_threshold;
-   current = (voltage - device.var.q/device.C)/device.R;
-   device.var.q = current*time_constant;
-   time_constant = device.R*device.C; 
+        end
+        if impedance_has_actual_value(device.data.C)
+           assert(~impedance_has_actual_value(device.data.L));
+           % flag error if capacitor is still charging
+           % --------------------------------------------------------------
+           time_constant = min(max_time_constant, device.data.R*device.data.C); 
+           error         = device.data.C_is_dummy && abs(voltage - device.var.q/device.data.C) > abs(voltage)*comp_params.dummy_influence_threshold;
+           current       = (voltage - device.var.q/device.data.C)/device.data.R;
+           device.var.q  = current*time_constant;
+        end
 end

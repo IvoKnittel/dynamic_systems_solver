@@ -5,6 +5,7 @@ function [currents, tau, edges] = get_edge_currents_unsafe(edges, node_voltages,
 % edges         ... array of circuit edge type
 % voltages      ... array of node voltages
 % comp_params   ... computation parameters
+% tau_max       ... maximum time constant
 %
 % OUTPUTS:
 % edges         ... array of circuit edge type
@@ -16,5 +17,5 @@ currents = zeros(1,length(edges));
 tau      = zeros(1,length(edges));
 
 for j= 1:length(edges)
-[edges(j).devices, currents(j), tau(j)] = get_edge_current(edge(j).devices, node_voltages, edge(j).s, edge(j).t, comp_params, tau_max);
+[edges(j).devices, currents(j), tau(j)] = get_edge_current([edges(j).linear_device edges(j).nonlinear_devices], node_voltages, edges(j).s, edges(j).t, comp_params, tau_max);
 end

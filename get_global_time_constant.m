@@ -15,7 +15,7 @@ nodes_var = [nodes.var];
 [currents, tau] = get_edge_currents_unsafe(edges, [nodes_var.potential], comp_params, Inf);
 % get voltage ranges for each active node such that there will be
 % no surprises from nonlinear devices
-max_charge_change   = get_node_voltage_ranges(nodes, edges).*[nodes.invC];
+max_charge_change   = get_node_voltage_ranges(nodes, edges, comp_params).*[nodes.invC];
        
 node_charge_change_rate = get_node_charge_change_rate(nodes, currents);
 node_charge_change_unlimited = node_charge_change_rate*tau;

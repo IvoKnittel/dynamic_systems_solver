@@ -19,8 +19,8 @@ end
 function linear_device = get_linear_device_by_idx(edge_info, idx)
 linear_device = [];
 %assert(impedance_has_actual_value(edge_info.R(idx)));
-if xor(impedance_has_actual_value(edge_info.C(idx)), impedance_has_actual_value(edge_info.L(idx)))
-    assert(edge_info.L(idx) == 0 & edge_info.C(idx)==0);
+if ~xor(impedance_has_actual_value(edge_info.C(idx)), impedance_has_actual_value(edge_info.L(idx)))
+    k=1;%assert(edge_info.L(idx) == 0 & edge_info.C(idx)==0 | edge_info.L(idx) == 0 & isinf(edge_info.C(idx)));
 end
 is_valid = impedance_has_actual_value([edge_info.R(idx) edge_info.L(idx) edge_info.C(idx)]);
 if any(is_valid)
