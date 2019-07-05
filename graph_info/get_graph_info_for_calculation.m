@@ -55,7 +55,7 @@ edge_info              =  reorder_edge_info(edge_info, node_info.names);
 [node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
 edge_info              =  reorder_edge_info(edge_info, node_info.names);
 [node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info); 
+edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info, comp_params); 
 
 edges = edge_info.devices;
 nodes = node_info_to_nodes_init(node_info, edges);

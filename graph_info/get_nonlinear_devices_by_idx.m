@@ -8,29 +8,32 @@ function devices = get_nonlinear_devices_by_idx(edge_info, edge_idx)
 % devices           ... array of device_type
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
-devices=[];
+devices = [];
 for j=1:length(find(edge_info.is_bc(edge_idx)>0))
-    next_device=device_type();
-    next_device.type = 'nonlinear';
-    next_device.data = nonlinear_device_data_type();
+    next_device               = device_type();
+    next_device.type          = 'nonlinear';
+    next_device.data          = nonlinear_device_data_type();
     next_device.data.base_idx = NaN; 
-    next_device.data.class = 'bc';
-    devices = [devices next_device];
+    next_device.data.class    = 'bc';
+    next_device.time_constant = Inf;
+    devices                   = [devices next_device];
 end
-for j=1:length(find(edge_info.is_be(edge_idx)>0))
-    next_device=device_type();
-    next_device.type = 'nonlinear';
-    next_device.data = nonlinear_device_data_type();
+for j = 1:length(find(edge_info.is_be(edge_idx)>0))
+    next_device               = device_type();
+    next_device.type          = 'nonlinear';
+    next_device.data          = nonlinear_device_data_type();
     next_device.data.base_idx = NaN; 
-    next_device.data.class          = 'be';
-    devices = [devices next_device];
+    next_device.data.class    = 'be';
+    next_device.time_constant = Inf;
+    devices                   = [devices next_device];
 end
-for j=1:length(find(edge_info.is_ce(edge_idx)>0))
-    next_device=device_type();
-    next_device.type = 'nonlinear';
-    next_device.data = nonlinear_device_data_type();
+for j = 1:length(find(edge_info.is_ce(edge_idx)>0))
+    next_device                     = device_type();
+    next_device.type                = 'nonlinear';
+    next_device.data                = nonlinear_device_data_type();
     next_device.data.class          = 'ce';
     next_device.data.base_idx       =  get_base_idx(edge_info, edge_idx);
+    next_device.time_constant       = Inf;
     devices = [devices next_device];
 end
 
