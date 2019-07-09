@@ -20,7 +20,7 @@ function circuitsolver()
 % 2. Supply voltages and Signal
 % --------------
 supply_voltage = 15;
-[signal.data, signal.time]=generate_signal_input();
+[signal.data, signal.time] = generate_signal_input();
 signal.timestep = signal.time(2)-signal.time(1);
 
 % 3. Set simulation parameters

@@ -59,49 +59,24 @@ mem = remove_circuit_nodes(mem, trans_idx(1));
 nodes_info = mem.G.Nodes.info';
 trans_idx = find([nodes_info.is_trans]~=0);
 mem = remove_circuit_nodes(mem, trans_idx);
-
-node_info = mem.G.Nodes.info';
-edge_info = mem.G.Edges.info';
-
 % 3. : Floating nodes are each connected to ground by a minuscule capacitance
 % ------------------------------------------------------
-G =  add_capacitance_to_ground(G, comp_params.time_epsilon, comp_params.C_to_ground);
-
+mem =  add_capacitance_to_ground(mem, comp_params.time_epsilon, comp_params.C_to_ground);
 
 % 4. : Multiple edges are merged.
 % -------------------------------
-[edge_info, node_info] = merge_multiple_edges(edge_info, node_info);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-edge_info = reorder_edge_info(edge_info, node_info.names);
-
-node_info.num_nodes = length(node_info.names);  
+mem = merge_multiple_edges(mem);
+mem = circuit_display_assign_colors3(mem);
 
 % 5. : Add transistor Ebers-Moll parasitic capacitances.
 % ------------------------------------------------------
-edge_info              = add_transistor_capacitances(edge_info);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-edge_info              =  reorder_edge_info(edge_info, node_info.names);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
+mem = add_transistor_capacitances(mem);
+
 
 % 6. : Voltage sources replaced by large charged capacitances.
 % ------------------------------------------------------------
-[node_info, edge_info] =  model_voltage_sources_as_capacitances(node_info, edge_info);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-edge_info              =  reorder_edge_info(edge_info, node_info.names);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-
-% 4. : Multiple edges are merged.
-% -------------------------------
-[edge_info, node_info] = merge_multiple_edges(edge_info, node_info);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-edge_info = reorder_edge_info(edge_info, node_info.names);
-[node_info, edge_info] = init_circuit_nodes(node_info, edge_info);
-
-node_info.num_nodes = length(node_info.names);  
-
-edge_info.devices      = convert_edge_info_to_edge_type_array(edge_info, comp_params);
-
-edges = edge_info.devices;
+mem =  model_voltage_sources_as_capacitances(mem);
+edges = convert_edge_info_to_edge_type_array(mem.G.Edges.info', comp_params);
 nodes = node_info_to_nodes_init(node_info, edges);
 nodes(strcmp(node_info.names,'supply')).is_active = true;
 nodes(strcmp(node_info.names,'supply')).var.potential = supply_voltage;

@@ -9,7 +9,7 @@ function next_device = get_nonlinear_devices_by_idx(edge_info, edge_idx)
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 next_device = [];
-if edge_info.is_bc(edge_idx)>0
+if [edge_info(edge_idx).is_bc]>0
     next_device               = device_type();
     next_device.type          = 'nonlinear';
     next_device.data          = nonlinear_device_data_type();
@@ -17,7 +17,7 @@ if edge_info.is_bc(edge_idx)>0
     next_device.data.class    = 'bc';
     next_device.time_constant = Inf;
 end
-if edge_info.is_be(edge_idx)>0
+if [edge_info(edge_idx).is_be]>0
     next_device               = device_type();
     next_device.type          = 'nonlinear';
     next_device.data          = nonlinear_device_data_type();
@@ -25,7 +25,7 @@ if edge_info.is_be(edge_idx)>0
     next_device.data.class    = 'be';
     next_device.time_constant = Inf;
 end
-if edge_info.is_ce(edge_idx)>0
+if [edge_info(edge_idx).is_ce]>0
     next_device                     = device_type();
     next_device.type                = 'nonlinear';
     next_device.data                = nonlinear_device_data_type();
@@ -51,14 +51,14 @@ function base_idx = get_base_idx(edge_info, edge_idx)
 %        .           .
 %       l              u
 
-upper_node_bc_idx = get_base_idx_intern(edge_info.s, edge_info.t, edge_info.s(edge_idx), edge_idx, edge_info.is_bc);
-lower_node_be_idx = get_base_idx_intern(edge_info.s, edge_info.t, edge_info.t(edge_idx), edge_idx, edge_info.is_be);
+upper_node_bc_idx = get_base_idx_intern([edge_info.s], [edge_info.t], edge_info(edge_idx).s, edge_idx, [edge_info.is_bc]);
+lower_node_be_idx = get_base_idx_intern([edge_info.s], [edge_info.t], edge_info(edge_idx).t, edge_idx, [edge_info.is_be]);
 
-tmp              = [edge_info.s(upper_node_bc_idx);edge_info.t(upper_node_bc_idx)];
+tmp              = [edge_info(upper_node_bc_idx).s;edge_info(upper_node_bc_idx).t];
 cand_base_nodes  = tmp(tmp~=edge_info.s(edge_idx));
 
-tmp              = [edge_info.s(lower_node_be_idx);edge_info.t(lower_node_be_idx)];
-cand_base_nodes2 = tmp(tmp~=edge_info.s(edge_idx));
+tmp              = [edge_info(lower_node_be_idx).s;edge_info(lower_node_be_idx).t];
+cand_base_nodes2 = tmp(tmp~=edge_info(edge_idx).s);
 
 base_idx = intersect(cand_base_nodes, cand_base_nodes2);
 if length(base_idx)>1
@@ -66,14 +66,14 @@ if length(base_idx)>1
 end
     
 if isempty(base_idx)
-    upper_node_bc_idx = get_base_idx_intern(edge_info.s, edge_info.t, edge_info.s(edge_idx), edge_idx, edge_info.is_be);
-    lower_node_be_idx = get_base_idx_intern(edge_info.s, edge_info.t, edge_info.t(edge_idx), edge_idx, edge_info.is_bc);
+    upper_node_bc_idx = get_base_idx_intern([edge_info.s], [edge_info.t], edge_info(edge_idx).s, edge_idx, [edge_info.is_be]);
+    lower_node_be_idx = get_base_idx_intern([edge_info.s], [edge_info.t], edge_info(edge_idx).t, edge_idx, [edge_info.is_bc]);
     
-    tmp              = [edge_info.s(upper_node_bc_idx);edge_info.t(upper_node_bc_idx)];
-    cand_base_nodes  = tmp(tmp~=edge_info.s(edge_idx));
+    tmp              = [edge_info(upper_node_bc_idx).s;edge_info(upper_node_bc_idx).t];
+    cand_base_nodes  = tmp(tmp~=edge_info(edge_idx).s);
     
-    tmp              = [edge_info.s(lower_node_be_idx);edge_info.t(lower_node_be_idx)];
-    cand_base_nodes2 = tmp(tmp~=edge_info.s(edge_idx));
+    tmp              = [edge_info(lower_node_be_idx).s;edge_info(lower_node_be_idx).t];
+    cand_base_nodes2 = tmp(tmp~=edge_info(edge_idx).s);
     
     base_idx = intersect(cand_base_nodes, cand_base_nodes2);
     if length(base_idx)>1

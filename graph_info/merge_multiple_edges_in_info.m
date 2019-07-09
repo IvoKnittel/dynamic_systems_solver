@@ -20,19 +20,26 @@ function new_edge_info = merge_multiple_edges_in_info(edge_info, node_info, idx_
  
 if ~isempty(idx_multiple)
     if ~isempty(idx_multiple)
-        new_edge_info              =  edge_info_type();
+        new_edge_info   =  edge_info_type();
+        new_edge_info.s = edge_info(idx_multiple(1)).s;
+        new_edge_info.t = edge_info(idx_multiple(1)).t;
+        new_edge_info.s_by_id = node_info(new_edge_info.s).id;
+        new_edge_info.t_by_id = node_info(new_edge_info.t).id;        
         [new_edge_info.R, new_edge_info.R_is_dummy]= merge_impedance(to_merge, [edge_info.R], [edge_info.R_is_dummy]);        
         [new_edge_info.L, new_edge_info.L_is_dummy]= merge_impedance(to_merge, [edge_info.L], [edge_info.L_is_dummy]);    
         [new_edge_info.C, new_edge_info.C_is_dummy]= merge_impedance(to_merge, [edge_info.C], [edge_info.C_is_dummy]);    
         new_edge_info.is_base        =  NaN;
         new_edge_info.is_collector   =  NaN;
         new_edge_info.is_emitter     =  NaN;
-        new_edge_info.is_bc          =  sum(edge_info(idx_multiple).is_bc);
-        new_edge_info.is_be          =  sum(edge_info(idx_multiple).is_be);
-        new_edge_info.is_ce          =  sum(edge_info(idx_multiple).is_ce);
+        new_edge_info.is_bc          =  sum(double([edge_info(idx_multiple).is_bc]));
+        new_edge_info.is_be          =  sum(double([edge_info(idx_multiple).is_be]));
+        new_edge_info.is_ce          =  sum(double([edge_info(idx_multiple).is_ce]));
         new_edge_info.device_info    = nonlinear_device_info_type();
-        new_edge_info.device_info.Ct = [edge_info(idx_multiple).device_info.Ct];
-        new_edge_info.device_info.Rt = [edge_info(idx_multiple).device_info.Rt];
+        device_info = [edge_info(idx_multiple).device_info];
+        if ~isempty(device_info)
+            new_edge_info.device_info.Ct = [device_info.Ct];
+            new_edge_info.device_info.Rt = [device_info.Rt];
+        end
     end
 end
 

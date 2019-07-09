@@ -25,33 +25,10 @@ for j=1:length(delete_node_idx)
     for n=1:length(neighbor_nodes)
         yet_unconnected = find(neighbor_node_idx > n);
         for m=1:length(yet_unconnected)
-            neigbor_node_pair = [neighbor_nodes(n) neighbor_nodes(yet_unconnected(m))];            
-            new_edges = [new_edges merge_edge_pair(edge_info, [node_info.id], delete_node_idx(j), neigbor_node_pair)];
-            new_edges(end).id = mem.next_unique_id;
-            mem.next_unique_id = mem.next_unique_id + 1;
+            neighbor_node_pair = [neighbor_nodes(n) neighbor_nodes(yet_unconnected(m))];            
+            new_edges = [new_edges merge_edge_pair(edge_info, [node_info.id], delete_node_idx(j), neighbor_node_pair)];
         end
     end
 end
 mem.G = rmnodes(mem.G, delete_node_idx);
-
-% get new order of nodes, which is fixed from now on
-% --------------------------------------------------
-node_info = mem.G.Nodes.info';
-
-% add new edges
-% -------------
-for j=1:length(new_edges)
-   endnodes_new_edge = [find([node_info.id] == new_edges(j).s_by_id); find([node_info.id] == new_edges(j).t_by_id)]; 
-   mem.G        = addedge(mem.G, endnodes_new_edge(1),endnodes_new_edge(2));
-   endnodes     = mem.G.Edges{:,1};
-   mem.G.Edges.info(endnodes(:,1) == endnodes_new_edge(1) & endnodes(:,2) == endnodes_new_edge(2)) = new_edges(j);  
-end
-
-
-% update edge endnodes
-% --------------------
-node_info = mem.G.Nodes.info';
-for j=1:size(mem.G.Edges.info)
-    mem.G.Edges.info(j).s = find([node_info.id] == mem.G.Edges.info(j).s_by_id);
-    mem.G.Edges.info(j).t = find([node_info.id] == mem.G.Edges.info(j).t_by_id);
-end
+mem = add_new_circuit_edges(mem, new_edges);
