@@ -16,4 +16,5 @@ edge_info.is_be          = zeros(1,length(edge_info.s));
 edge_info.is_ce          = zeros(1,length(edge_info.s));
 edge_info.L_is_dummy     = false(1,length(edge_info.s));
 edge_info.C_is_dummy     = false(1,length(edge_info.s));
+edge_info.reverse         = false(1,length(edge_info.s));
 edge_info                =  reorder_edge_info(edge_info, node_info.names);

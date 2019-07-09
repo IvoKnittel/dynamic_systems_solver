@@ -26,8 +26,8 @@ signal.timestep = signal.time(2)-signal.time(1);
 % 3. Set simulation parameters
 % ----------------------------
 comp_params.eps               = 1e-89;
-comp_params.time_epsilon      = 1e-15;
-comp_params.C_to_ground       = 1e-15;
+comp_params.time_epsilon      = 1e-12;
+comp_params.C_to_ground       = 1e-12;
 comp_params.dummy_inductance  = 1e-5;
 comp_params.dummy_resistor    = 1;
 comp_params.voltage_tolerance = 1e-3;
@@ -44,17 +44,17 @@ comp_params.nonlinearity_threshold         = 0.15;
 % 5. Display circuit to be simulated
 % -------------------------------
 figure(1);
-G = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
+G               = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
 plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
 
 % 6. Convert from dispplay to computation form
 % ---------------------------------------------
-[nodes, edges, node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage);
+G = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage);
 
 % 7. Display the circuit to be solved
 % --------------------------------
 figure(2);
-G = graph(edge_info.s,edge_info.t,1, node_info.names);
+G = digraph(edge_info.s,edge_info.t,1, node_info.names);
 plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_info.labels, 'EdgeCData', edge_info.colors);
 
 % Set the supply voltage active because of initial switch-on

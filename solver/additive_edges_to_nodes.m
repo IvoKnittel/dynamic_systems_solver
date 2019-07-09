@@ -16,7 +16,7 @@ nodes_quantity = zeros(1,length(nodes));
 for node_idx=1:length(nodes)
     % get edges connecting to this node
     % ---------------------------------
-    crt_edge_idx = find(get_from_edges(edges, 'edges_to_node', node_idx));
+    crt_edge_idx = get_from_edges(edges, 'edges_to_node', node_idx);
 
     % take the minimum of the edge quantity for all connected edges
     % --------------------------------------------------------------

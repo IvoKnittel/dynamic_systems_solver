@@ -3,6 +3,7 @@ function edge = edge_type()
 % --------------------------------------------------------- 
 edge.s=[];
 edge.t=[];
+edge.reverse =false;
 edge.linear_device      = [];
 edge.nonlinear_devices  = [];
 edge.error              = false;
