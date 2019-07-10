@@ -2,12 +2,10 @@ function mem =  model_voltage_sources_as_capacitances(mem, comp_params)
 % connect all fixed voltage nodes to ground with an infinite capacitance
 % ----------------------------------------------------------------------
 % INPUTS:
-% node_info         ... node_info_type 
-% edge_info         ... edge_info_type
+% mem           ... graph info memory
 
 % OUTPUTS:
-% node_info         ... node_info_type 
-% edge_info         ... edge_info_type
+% mem           ... graph info memory
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 
@@ -22,11 +20,11 @@ for j=1:length(voltage_sources_node_idx)
     new_edge_info.t_by_id             =  sink_id;
     new_edge_info.linear.R.val        =  comp_params.voltage_source_R;       
     new_edge_info.linear.R.is_dummy   =  true;
-    new_edge_info.linear.L.is_dummy   =  false;
-    new_edge_info.linear.C.is_dummy   =  false;
+    new_edge_info.linear.C.is_dummy   =  true;
     new_edge_info.linear.L.val        =  0;      
     new_edge_info.linear.C.val        =  comp_params.voltage_source_C; 
-    new_edge_info.device_info         =  nonlinear_device_info_type();
+    new_edge_info.linear.reverse      =  true;
+    new_edge_info.device_info         =  [];
     new_edges = [new_edges new_edge_info];
 end
 

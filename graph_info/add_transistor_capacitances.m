@@ -2,9 +2,9 @@ function mem = add_transistor_capacitances(mem)
 % adds edges for Ebers-Moll transistor capacitances  
 % ----------------------------------------------------------------------
 % INPUTS:
-% edge_info         ... edge_info_type
+% mem           ... graph info memory
 % OUTPUTS:
-% edge_info         ... edge_info_type
+% mem           ... graph info memory
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 % find all Ebers-Moll transisitor replacement devices

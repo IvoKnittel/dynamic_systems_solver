@@ -1,4 +1,14 @@
 function mem = add_new_circuit_edges(mem, new_edges)
+% add circuit edges to graph
+% ----------------------------------------------------------------------
+% INPUTS:
+% mem        ... graph info memory
+% new_edges  ... array of edge info type
+% OUTPUTS:
+% mem        ... graph info memory
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
+
 node_info = mem.G.Nodes.info';
 
 % add new edges

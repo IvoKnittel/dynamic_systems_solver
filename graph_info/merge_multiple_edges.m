@@ -3,9 +3,9 @@ function mem = merge_multiple_edges(mem)
 % carrying devices in parallel
 % ----------------------------------------------------------------------
 % INPUTS:
-% edge_info       ... edge_info_type
+% mem        ... graph info memory
 % OUTPUTS:
-% edge_info     ... edge_info_type
+% mem        ... graph info memory
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
  node_info = mem.G.Nodes.info';

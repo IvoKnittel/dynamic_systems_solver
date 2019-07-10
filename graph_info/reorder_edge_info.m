@@ -1,6 +1,12 @@
 function G = reorder_edge_info(G, node_ids)
-% order edge info such that the
-% right info items are deleted:
+% order edge info such that it matches the edge numbering in graph
+% ----------------------------------------------------------------------
+% INPUTS:
+% mem        ... graph info memory
+% OUTPUTS:
+% mem        ... graph info memory
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 edge_info      = G.Edges.info;
 endnodes       = G.Edges{:,1};
 

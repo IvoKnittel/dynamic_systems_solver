@@ -3,12 +3,10 @@ function mem = remove_circuit_nodes(mem, delete_node_idx)
 % devices
 % ----------------------------------------------------------------------
 % INPUTS:
-% node_info       ... node_info_type
-% edge_info       ... edge_info_type
+% mem           ... graph info memory
 % delete_node_idx ... array of indices in node_info
 % OUTPUTS:
-% node_info     ... node_info_type
-% edge_info     ... edge_info_type
+% mem           ... graph info memory
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 

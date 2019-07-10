@@ -1,8 +1,21 @@
 function [new_edges, delete_idx] = get_multiple_edges_to_merge(node_info,edge_info)
+% Prepares merges of edges with same endpoints
+% ----------------------------------------------------------------------
+% INPUTS:
+% node_info     ... node_info_type
+% edge_info     ... edge_info_type
+% OUTPUTS:
+% new_edges     ... array of edge info type      the merge result edge for each group
+% delete_idx    ... edge index array             indices of edges to delete in graph 
+% ----------------------------------------------
+% Ivo Knittel 2019 Copyright all rights reserved
 
 last_s = 0;
 multiple_idx_info=[];
 unique_id = 1;
+
+% 1. Identify groups of edges with the same endnodes 
+% --------------------------------------------------
 for j=1:length(edge_info)
     if edge_info(j).s == last_s
         continue
@@ -20,6 +33,8 @@ for j=1:length(edge_info)
     last_s = edge_info(j).s;
 end
 
+% 2. Prepare merge of members of the same group
+% ---------------------------------------------
 unique_ids = unique(multiple_idx_info(2,:));
 delete_idx = multiple_idx_info(1,:);
 new_edges=[];

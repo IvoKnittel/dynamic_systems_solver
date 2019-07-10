@@ -2,14 +2,12 @@ function mem =  add_capacitance_to_ground(mem, time_epsilon, C_to_ground)
 % connects all floating nodes to ground by an RC with infinitesimal time constant
 % ----------------------------------------------------------------------
 % INPUTS:
-% node_info         ... node_info_type
-% edge_info         ... edge_info_type
-% time_epsilon      ... time constant  
-% C_to_ground       ... ground capacitance
+% mem           ... graph info memory
+% time_epsilon  ... time constant  
+% C_to_ground   ... ground capacitance
 %
 % OUTPUTS:
-% node_info         ... node_info_type
-% edge_info         ... edge_info_type
+% mem           ... graph info memory
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 
