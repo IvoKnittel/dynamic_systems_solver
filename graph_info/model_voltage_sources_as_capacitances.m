@@ -17,16 +17,16 @@ sink_id   = node_info(strcmp([node_info.names],'sink')).id;
 voltage_sources_node_idx = find([node_info.floating]~=1 & ~strcmp([node_info.names],  'sink'));
 new_edges = [];
 for j=1:length(voltage_sources_node_idx)
-    new_edge_info              =  edge_info_type();
-    new_edge_info.s_by_id      =  [node_info(voltage_sources_node_idx(j)).id];
-    new_edge_info.t_by_id      =  sink_id;
-    new_edge_info.R.val        =  comp_params.voltage_source_R;       
-    new_edge_info.R.is_dummy   =  true;
-    new_edge_info.L.is_dummy   =  false;
-    new_edge_info.C.is_dummy   =  false;
-    new_edge_info.L.val        =  0;      
-    new_edge_info.C.val        =  comp_params.voltage_source_C; 
-    new_edge_info.device_info  =  nonlinear_device_info_type();
+    new_edge_info                     =  edge_info_type();
+    new_edge_info.s_by_id             =  [node_info(voltage_sources_node_idx(j)).id];
+    new_edge_info.t_by_id             =  sink_id;
+    new_edge_info.linear.R.val        =  comp_params.voltage_source_R;       
+    new_edge_info.linear.R.is_dummy   =  true;
+    new_edge_info.linear.L.is_dummy   =  false;
+    new_edge_info.linear.C.is_dummy   =  false;
+    new_edge_info.linear.L.val        =  0;      
+    new_edge_info.linear.C.val        =  comp_params.voltage_source_C; 
+    new_edge_info.device_info         =  nonlinear_device_info_type();
     new_edges = [new_edges new_edge_info];
 end
 

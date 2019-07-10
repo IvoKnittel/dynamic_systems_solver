@@ -22,10 +22,8 @@ if ~isempty(id_deleted)
     new_edge_info              = edge_info_type();
     new_edge_info.s_by_id      = node_ids(neigbor_node_pair(1));
     new_edge_info.t_by_id      = node_ids(neigbor_node_pair(2));
-    new_edge_info.R            = merge_impedance([edge_info([id_deleted id_other]).R]);    
-    new_edge_info.L            = merge_impedance([edge_info([id_deleted id_other]).L]);    
-    new_edge_info.C            = merge_impedance([edge_info([id_deleted id_other]).C]);  
-    new_edge_info.device_info  =  merge_device_info([edge_info(id_deleted).device_info edge_info(id_other).device_info]);
+    new_edge_info.linear       = merge_impedances([edge_info([id_deleted id_other]).linear]);      
+    new_edge_info.device_info  = merge_device_info([edge_info(id_deleted).device_info edge_info(id_other).device_info]);
 end
 function device_info = merge_device_info(device_infos)
     device_info  = nonlinear_device_info_type();
@@ -64,6 +62,12 @@ id_deleted = find([edge_info.s]==node1 & [edge_info.t] == node2);
 if isempty(id_deleted)
    id_deleted = find([edge_info.t]==node1 & [edge_info.s] ==node2);                
 end
+
+function linear  = merge_impedances(linear_vec)
+    linear       = linear_device_info_type();
+    linear.R     = merge_impedance([linear_vec.R]);
+    linear.L     = merge_impedance([linear_vec.L]);
+    linear.C     = merge_impedance([linear_vec.C]);
 
 function out = merge_impedance(imp_struct)
     sigma = 1./[imp_struct.val];

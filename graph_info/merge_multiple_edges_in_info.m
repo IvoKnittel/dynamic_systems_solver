@@ -20,16 +20,20 @@ function new_edge_info = merge_multiple_edges_in_info(edge_info, node_info, idx_
  
 if ~isempty(idx_multiple)
     if ~isempty(idx_multiple)
-        new_edge_info         =  edge_info_type();
+        new_edge_info         = edge_info_type();
         new_edge_info.s       = edge_info(idx_multiple(1)).s;
         new_edge_info.t       = edge_info(idx_multiple(1)).t;
         new_edge_info.s_by_id = node_info(new_edge_info.s).id;
         new_edge_info.t_by_id = node_info(new_edge_info.t).id;        
-        new_edge_info.R       = merge_impedance(to_merge, [edge_info.R]);        
-        new_edge_info.L       = merge_impedance(to_merge, [edge_info.L]);    
-        new_edge_info.C       = merge_impedance(to_merge, [edge_info.C]);    
+        new_edge_info.linear  = merge_impedances(to_merge, [edge_info.linear]);           
     end
 end
+
+function linear = merge_impedances(to_merge, linear_vec)
+linear = linear_device_info_type();
+linear.R     = merge_impedance(to_merge, [linear_vec.R]); 
+linear.L     = merge_impedance(to_merge, [linear_vec.L]); 
+linear.C     = merge_impedance(to_merge, [linear_vec.C]); 
 
 function out = merge_impedance(to_merge, imp_vec)
 

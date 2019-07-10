@@ -1,5 +1,5 @@
-function device_data = nonlinear_device_info_type()
-device_data.class    = [];
-device_data.Ct       = [];
-device_data.Rt       = [];
-device_data.reverse  = false;
+function device_info = nonlinear_device_info_type()
+device_info.class    = [];
+device_info.Ct       = [];
+device_info.Rt       = [];
+device_info.reverse  = false;

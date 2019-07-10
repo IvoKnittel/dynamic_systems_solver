@@ -66,6 +66,7 @@ ivec=[];
 uvec=[];
 signal.idx = strcmp(node_info_disp.names,'signal');
 
+
 for j = 2:length(signal.time)-1
     [nodes, edges] = circuit_solver_step(nodes, edges, comp_params);
     

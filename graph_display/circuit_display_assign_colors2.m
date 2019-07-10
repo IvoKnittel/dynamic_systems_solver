@@ -37,8 +37,8 @@ for j=1:length(node_info)
 end
 
 for idx=1:length(edge_info)   
-    if edge_info(idx).R.val > 0
-        edge_info(idx).labels =['R' num2str(edge_info(idx).R.val)];
+    if edge_info(idx).linear.R.val > 0
+        edge_info(idx).labels =['R' num2str(edge_info(idx).linear.R.val)];
         edge_info(idx).colors =50;
     else
         edge_info(idx).labels ='';
