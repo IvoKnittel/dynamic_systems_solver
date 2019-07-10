@@ -44,18 +44,20 @@ comp_params.nonlinearity_threshold         = 0.15;
 % 5. Display circuit to be simulated
 % -------------------------------
 figure(1);
-G               = graph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
+G               = digraph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
 plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
 
 % 6. Convert from dispplay to computation form
 % ---------------------------------------------
-G = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage);
-
+[G,nodes,edges] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage);
+node_info = G.Nodes.info';
+edge_info = G.Edges.info';
 % 7. Display the circuit to be solved
 % --------------------------------
 figure(2);
-G = digraph(edge_info.s,edge_info.t,1, node_info.names);
-plot(G,'XData',node_info.pos(1,:),'YData',node_info.pos(2,:), 'EdgeLabel', edge_info.labels, 'EdgeCData', edge_info.colors);
+G = digraph([edge_info.s],[edge_info.t],1, [node_info.names]);
+pos = [node_info.pos];
+plot(G,'XData', pos(1,:), 'YData', pos(2,:), 'EdgeLabel', {edge_info.labels}, 'EdgeCData', [edge_info.colors]);
 
 % Set the supply voltage active because of initial switch-on
 % ----------------------------------------------------------

@@ -1,4 +1,4 @@
-function [nodes, edges, node_info, edge_info] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage)
+function [G, nodes,edges] = get_graph_info_for_calculation(node_info_disp, edge_info_disp, comp_params, supply_voltage)
 % node info and edge info for pretty display of the circuit
 % is converted into node info and edge info for computation
 % 1. : Floating nodes are each connected to ground by a minuscule capacitance
@@ -18,14 +18,8 @@ function [nodes, edges, node_info, edge_info] = get_graph_info_for_calculation(n
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 G = digraph(edge_info_disp.s,edge_info_disp.t);
-edge_info_arr   = convert_edge_info_to_edge_info_array(edge_info_disp);
-edges           = convert_edge_info_to_edge_type_array(edge_info_disp, comp_params);
-node_info_arr   = node_info_to_nodes_info_array(node_info_disp);
-nodes           = node_info_to_nodes_init(node_info_disp, edges);
-G.Edges.info    = edge_info_arr';
-G.Nodes.info    = node_info_arr';
-G.Edges.devices = edges';
-G.Nodes.devices = nodes';
+G.Edges.info    = convert_edge_info_to_edge_info_array(edge_info_disp)';
+G.Nodes.info   = node_info_to_nodes_info_array(node_info_disp)';
 
 nodes_info  = G.Nodes.info';
 edges_info = G.Edges.info';
@@ -72,12 +66,13 @@ mem = circuit_display_assign_colors3(mem);
 % ------------------------------------------------------
 mem = add_transistor_capacitances(mem);
 
-
 % 6. : Voltage sources replaced by large charged capacitances.
 % ------------------------------------------------------------
 mem =  model_voltage_sources_as_capacitances(mem);
 edges = convert_edge_info_to_edge_type_array(mem.G.Edges.info', comp_params);
+node_info = mem.G.Nodes.info';
 nodes = node_info_to_nodes_init(node_info, edges);
-nodes(strcmp(node_info.names,'supply')).is_active = true;
-nodes(strcmp(node_info.names,'supply')).var.potential = supply_voltage;
+nodes(strcmp([node_info.names],'supply')).is_active = true;
+nodes(strcmp([node_info.names],'supply')).var.potential = supply_voltage;
 edges = init_nonlinear_device_voltage_ranges(nodes, edges);
+G = mem.G;

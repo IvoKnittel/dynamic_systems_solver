@@ -9,8 +9,8 @@ function nodes = node_info_to_nodes_init(node_info, edges)
 % OUTPUTS:
 % nodes               ... array of cicuit_node_type
 % ----------------------------------------------
-nodes = repmat(circuit_node_type(),1,length(node_info.names));
-for crt_node=1:length(node_info.names)
+nodes = repmat(circuit_node_type(),1,length([node_info.names]));
+for crt_node=1:length(node_info)
   crt_edges           = find([edges.s]== crt_node);
   
   for idx =1:length(crt_edges)
