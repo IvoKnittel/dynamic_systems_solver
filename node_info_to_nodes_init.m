@@ -15,7 +15,7 @@ for crt_node=1:length(node_info)
   
   for idx =1:length(crt_edges)
      if ~isempty(edges(crt_edges(idx)).linear_device) 
-        nodes(crt_node).C = nodes(crt_node).C + edges(crt_edges(idx)).linear_device.data.C;
+        nodes(crt_node).C = nodes(crt_node).C + edges(crt_edges(idx)).linear_device.data.C.val;
      end
   end
   nodes(crt_node).timeconstant         = NaN;

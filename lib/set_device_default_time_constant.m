@@ -4,10 +4,10 @@ switch device.type
     case 'nonlinear'
          time_constant = Inf;
     case 'linear'   
-        if impedance_has_actual_value(device.data.L)
-           time_constant = device.data.L/device.data.R; 
+        if impedance_has_actual_value(device.data.L.val)
+           time_constant = device.data.L.val/device.data.R.val; 
         end
-        if impedance_has_actual_value(device.data.C)
-           time_constant = device.data.R*device.data.C; 
+        if impedance_has_actual_value(device.data.C.val)
+           time_constant = device.data.R.val*device.data.C.val; 
         end
 end

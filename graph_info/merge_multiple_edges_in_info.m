@@ -20,31 +20,31 @@ function new_edge_info = merge_multiple_edges_in_info(edge_info, node_info, idx_
  
 if ~isempty(idx_multiple)
     if ~isempty(idx_multiple)
-        new_edge_info   =  edge_info_type();
-        new_edge_info.s = edge_info(idx_multiple(1)).s;
-        new_edge_info.t = edge_info(idx_multiple(1)).t;
+        new_edge_info         =  edge_info_type();
+        new_edge_info.s       = edge_info(idx_multiple(1)).s;
+        new_edge_info.t       = edge_info(idx_multiple(1)).t;
         new_edge_info.s_by_id = node_info(new_edge_info.s).id;
         new_edge_info.t_by_id = node_info(new_edge_info.t).id;        
-        [new_edge_info.R, new_edge_info.R_is_dummy]= merge_impedance(to_merge, [edge_info.R], [edge_info.R_is_dummy]);        
-        [new_edge_info.L, new_edge_info.L_is_dummy]= merge_impedance(to_merge, [edge_info.L], [edge_info.L_is_dummy]);    
-        [new_edge_info.C, new_edge_info.C_is_dummy]= merge_impedance(to_merge, [edge_info.C], [edge_info.C_is_dummy]);    
+        new_edge_info.R       = merge_impedance(to_merge, [edge_info.R]);        
+        new_edge_info.L       = merge_impedance(to_merge, [edge_info.L]);    
+        new_edge_info.C       = merge_impedance(to_merge, [edge_info.C]);    
     end
 end
 
-function [imp_vec_out, imp_vec_is_dummy_out] = merge_impedance(to_merge, imp_vec, imp_is_dummy_vec)
-      
-is_selected = to_merge & ~isnan(imp_vec);
+function out = merge_impedance(to_merge, imp_vec)
+
+is_selected = to_merge & ~isnan([imp_vec.val]);
 if any(is_selected) 
-    if any(~imp_is_dummy_vec(is_selected))
-        is_selected = is_selected & ~imp_is_dummy_vec;
-        imp_vec_out            =  1/sum(1./imp_vec(is_selected));
-        imp_vec_is_dummy_out   =  0;
+    if any(~[imp_vec(is_selected).is_dummy])
+        is_selected = is_selected & ~[imp_vec.is_dummy];
+        out.val       = 1/sum(1./[imp_vec(is_selected).val]);
+        out.is_dummy  = false;
     else
         sel_idx = find(is_selected);
-        imp_vec_out            =  imp_vec(sel_idx(1));
-        imp_vec_is_dummy_out   =  1;
+        out.val       = imp_vec(sel_idx(1)).val;
+        out.dummy     = true;
     end
 else
-    imp_vec_is_dummy_out   =  0; 
-    imp_vec_out  = NaN;
+    out.is_dummy      = false; 
+    out.val           = NaN;
 end

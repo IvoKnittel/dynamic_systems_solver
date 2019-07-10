@@ -68,7 +68,7 @@ mem = add_transistor_capacitances(mem);
 
 % 6. : Voltage sources replaced by large charged capacitances.
 % ------------------------------------------------------------
-mem =  model_voltage_sources_as_capacitances(mem);
+mem =  model_voltage_sources_as_capacitances(mem, comp_params);
 edges = convert_edge_info_to_edge_type_array(mem.G.Edges.info', comp_params);
 node_info = mem.G.Nodes.info';
 nodes = node_info_to_nodes_init(node_info, edges);

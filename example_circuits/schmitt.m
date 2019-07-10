@@ -44,13 +44,16 @@ edge_info             = edge_info_type();
 edge_info.s_by_name   = {'supply',     'supply',     'supply_cpy',  'upper_left', 'upper_left', 'upper_right' , 'left_trans', 'left_trans', 'left base', 'right_trans', 'lower', 'sink',       'sink'};
 edge_info.t_by_name   = {'upper_left', 'supply_cpy', 'upper_right', 'left_trans', 'right_trans', 'right_trans', 'left base',  'lower'     , 'signal'   , 'lower'      , 'sink'  , 'sink_cpy_l', 'sink_cpy_r'};
 % R is in parallel to other devices on the same edge
-edge_info.R =           [   1001          NaN            1003           NaN           NaN            NaN            NaN           NaN           1002       NaN           20       NaN            NaN    ];
-edge_info.R_is_dummy =  [    0            0               0             1             1              1              1             1             0          1              0        0              0      ];
+edge_info.R.val =       [   1001          NaN            1003           NaN           NaN            NaN            NaN           NaN           1002       NaN           20       NaN            NaN    ];
+edge_info.R.is_dummy =  [    0            0               0             1             1              1              1             1             0          1              0        0              0      ];
 % L is in series with other devices on the same edge
-edge_info.L =           [    0            0               0             0             0              0              0             0             0          0              0        0              0      ];
+edge_info.L.val =       [    0            0               0             0             0              0              0             0             0          0              0        0              0      ];
 % C is in parallel with other devices on the same edge
-edge_info.C =           [   NaN          NaN             NaN           NaN           NaN            NaN            NaN           NaN            NaN       NaN            NaN      NaN            NaN     ];
+edge_info.C.val =       [   NaN          NaN             NaN           NaN           NaN            NaN            NaN           NaN            NaN       NaN            NaN      NaN            NaN     ];
           is_base     = [    0            0               0             0             1              0              1             0             0          0              0        0              0      ];
           is_collector =[    0            0               0             1             0              1              0             0             0          0              0        0              0      ];
           is_emitter  = [    0            0               0             0             0              0              0             1             0          1              0        0              0      ];
 edge_info.device_info = make_nonlinear_device_info(edge_info, is_base, is_collector, is_emitter, Ct,Rt);
+edge_info.L.is_dummy  = false(1,length(edge_info.L.val)); 
+edge_info.C.is_dummy  = false(1,length(edge_info.C.val));   
+%edge_info             = make_linear_device_info(edge_info, R_is_dummy);

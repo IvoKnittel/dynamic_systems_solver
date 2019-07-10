@@ -15,7 +15,6 @@ function circuitsolver()
 % led
 [node_info_disp, edge_info_disp] = schmitt();
 [node_info_disp, edge_info_disp] = init_circuit_nodes(node_info_disp, edge_info_disp);
-[edge_info_disp]                 = init_circuit_edges(node_info_disp, edge_info_disp);
 
 % 2. Supply voltages and Signal
 % --------------
@@ -36,7 +35,9 @@ comp_params.probe_delta_u                  = 1e-2;
 comp_params.max_nonlinearity_voltage_range = 10;
 comp_params.time_constant_factor           = 0.2;
 comp_params.nonlinearity_threshold         = 0.15;
-
+comp_params.voltage_source_R               = 1e-12;       
+comp_params.voltage_source_C               = 1e4;
+ 
 % 4. format output display
 % ----------------------------
 %plot_config = get_plot_config(node_info_disp);
@@ -44,7 +45,7 @@ comp_params.nonlinearity_threshold         = 0.15;
 % 5. Display circuit to be simulated
 % -------------------------------
 figure(1);
-G               = digraph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
+G = digraph(edge_info_disp.s,edge_info_disp.t,1, node_info_disp.names);
 plot(G,'XData',node_info_disp.pos(1,:),'YData',node_info_disp.pos(2,:), 'EdgeLabel', edge_info_disp.labels, 'EdgeCData', edge_info_disp.colors, 'NodeCData', node_info_disp.colors);
 
 % 6. Convert from dispplay to computation form
