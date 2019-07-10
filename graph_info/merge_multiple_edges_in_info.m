@@ -28,18 +28,6 @@ if ~isempty(idx_multiple)
         [new_edge_info.R, new_edge_info.R_is_dummy]= merge_impedance(to_merge, [edge_info.R], [edge_info.R_is_dummy]);        
         [new_edge_info.L, new_edge_info.L_is_dummy]= merge_impedance(to_merge, [edge_info.L], [edge_info.L_is_dummy]);    
         [new_edge_info.C, new_edge_info.C_is_dummy]= merge_impedance(to_merge, [edge_info.C], [edge_info.C_is_dummy]);    
-        new_edge_info.is_base        =  NaN;
-        new_edge_info.is_collector   =  NaN;
-        new_edge_info.is_emitter     =  NaN;
-        new_edge_info.is_bc          =  sum(double([edge_info(idx_multiple).is_bc]));
-        new_edge_info.is_be          =  sum(double([edge_info(idx_multiple).is_be]));
-        new_edge_info.is_ce          =  sum(double([edge_info(idx_multiple).is_ce]));
-        new_edge_info.device_info    = nonlinear_device_info_type();
-        device_info = [edge_info(idx_multiple).device_info];
-        if ~isempty(device_info)
-            new_edge_info.device_info.Ct = [device_info.Ct];
-            new_edge_info.device_info.Rt = [device_info.Rt];
-        end
     end
 end
 

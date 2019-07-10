@@ -50,7 +50,7 @@ edge_info.R_is_dummy =  [    0            0               0             1       
 edge_info.L =           [    0            0               0             0             0              0              0             0             0          0              0        0              0      ];
 % C is in parallel with other devices on the same edge
 edge_info.C =           [   NaN          NaN             NaN           NaN           NaN            NaN            NaN           NaN            NaN       NaN            NaN      NaN            NaN     ];
-edge_info.is_base     = [    0            0               0             0             1              0              1             0             0          0              0        0              0      ];
-edge_info.is_collector =[    0            0               0             1             0              1              0             0             0          0              0        0              0      ];
-edge_info.is_emitter  = [    0            0               0             0             0              0              0             1             0          1              0        0              0      ];
-edge_info.device_info = make_nonlinear_device_info(edge_info,Ct,Rt);
+          is_base     = [    0            0               0             0             1              0              1             0             0          0              0        0              0      ];
+          is_collector =[    0            0               0             1             0              1              0             0             0          0              0        0              0      ];
+          is_emitter  = [    0            0               0             0             0              0              0             1             0          1              0        0              0      ];
+edge_info.device_info = make_nonlinear_device_info(edge_info, is_base, is_collector, is_emitter, Ct,Rt);

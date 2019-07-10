@@ -1,9 +1,6 @@
-function new_edges = get_transistor_capacitances(edge_info)
+function [new_edges, edge_info] = get_transistor_capacitances(edge_info)
 new_edges =[];
-% find all Ebers-Moll transisitor replacement devices
-trans_idx = find([edge_info.is_be] | [edge_info.is_bc] | [edge_info.is_ce]);
-for j   = 1:length(trans_idx)
-    idx = trans_idx(j);
+for idx   = 1:length(edge_info)
     % add a parasitic capacitance in parallel to each Ebers-Moll device
     % -----------------------------------------------------------------
     new_edge_info             = edge_info_type();
@@ -29,10 +26,13 @@ for j   = 1:length(trans_idx)
 %     new_edge_info.is_ce           = 0;  
 %     new_edge_info.device_info     = nonlinear_device_info_type();
     
-    device_info                   = edge_info(idx).device_info;
+    device_info                       = edge_info(idx).device_info;
     for k = 1:length(device_info.Ct)
-        new_edge_info.C               = [device_info.Ct(k)];
-        new_edge_info.R               = [device_info.Rt(k)];   
+        new_edge_info.C               = device_info.Ct(k);
+        new_edge_info.R               = device_info.Rt(k);   
+        device_info.Ct(k) = NaN;
+        device_info.Rt(k) = NaN;   
         new_edges =[new_edges new_edge_info];
     end
+    edge_info(idx).device_info = device_info; 
 end

@@ -18,7 +18,7 @@ function [G, nodes,edges] = get_graph_info_for_calculation(node_info_disp, edge_
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 G = digraph(edge_info_disp.s,edge_info_disp.t);
-G.Edges.info    = convert_edge_info_to_edge_info_array(edge_info_disp)';
+G.Edges.info   = convert_edge_info_to_edge_info_array(edge_info_disp)';
 G.Nodes.info   = node_info_to_nodes_info_array(node_info_disp)';
 
 nodes_info  = G.Nodes.info';

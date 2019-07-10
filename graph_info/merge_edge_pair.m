@@ -18,7 +18,7 @@ function new_edge_info =  merge_edge_pair(edge_info, node_ids, deleted_node, nei
 id_deleted = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(1));
 id_other   = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(2));
 new_edge_info = [];
-if ~isempty(id_deleted) && ~any([edge_info([id_deleted id_other]).reverse])
+if ~isempty(id_deleted)
     new_edge_info         = edge_info_type();
     new_edge_info.s_by_id = node_ids(neigbor_node_pair(1));
     new_edge_info.t_by_id = node_ids(neigbor_node_pair(2));
@@ -39,18 +39,39 @@ if ~isempty(id_deleted) && ~any([edge_info([id_deleted id_other]).reverse])
     if any(sel_idx)
         new_edge_info.C_is_dummy       = all(edge_info(idx(sel_idx)).C_is_dummy);
     end
-    
-    is_base      =  edge_info(id_deleted).is_base     | edge_info(id_other).is_base;
-    is_collector =  edge_info(id_deleted).is_collector| edge_info(id_other).is_collector;
-    is_emitter   =  edge_info(id_deleted).is_emitter  | edge_info(id_other).is_emitter;
-    new_edge_info.is_base      = NaN;
-    new_edge_info.is_collector = NaN;   
-    new_edge_info.is_emitter   = NaN;
-    new_edge_info.is_bc        =  double(is_base     &  is_collector);
-    new_edge_info.is_be        =  double(is_base     &  is_emitter);
-    new_edge_info.is_ce        =  double(is_emitter  &  is_collector); 
-    new_edge_info.device_info  = edge_info(id_deleted).device_info;
+    new_edge_info.device_info  =  merge_device_info([edge_info(id_deleted).device_info edge_info(id_other).device_info]);
 end
+function device_info = merge_device_info(device_infos)
+    device_info = nonlinear_device_info_type();
+    if ~isempty(device_infos)
+        return
+    end
+    is_base      =  any(strcmp([device_infos.class],'b'));
+    is_collector =  any(strcmp([device_infos.class],'c'));
+    is_emitter   =  any(strcmp([device_infos.class],'e'));
+
+    if(is_base && is_collector)
+         device_info.class = 'cb';
+         device_info.Ct    = mean([device_infos.Ct]);
+         device_info.Rt    = mean([device_infos.Rt]);
+         return
+    end    
+    if(is_base && is_emitter)
+         device_info.class = 'cb';
+         device_info.Ct    = mean([device_infos.Ct]);
+         device_info.Rt    = mean([device_infos.Rt]);
+         return
+    end
+    if(is_collector && is_emitter)
+         device_info.class = 'ce';
+         device_info.Ct    = mean([device_infos.Ct]);
+         device_info.Rt    = mean([device_infos.Rt]);
+         return
+    end
+    device_info.class      = {device_infos.class};
+    device_info.Ct         = [device_infos.Ct];
+    device_info.Rt         = [device_infos.Rt];
+
 
 function id_deleted = get_edge_to_delete(edge_info, node1, node2)            
 id_deleted = find([edge_info.s]==node1 & [edge_info.t] == node2);

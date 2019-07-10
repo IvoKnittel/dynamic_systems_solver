@@ -41,12 +41,6 @@ for j=1:length(floating_idx)
     new_edge_info.C_is_dummy   =  true;
     new_edge_info.L            =  0;      
     new_edge_info.C            =  C_to_ground; 
-    new_edge_info.is_base      =  false;
-    new_edge_info.is_collector =  false;   
-    new_edge_info.is_emitter   =  false;
-    new_edge_info.is_bc        =  false;
-    new_edge_info.is_be        =  false;
-    new_edge_info.is_ce        =  false;
     new_edges =[new_edges new_edge_info];
 end
 mem = add_new_circuit_edges(mem, new_edges);

@@ -25,10 +25,5 @@ delete_idx = multiple_idx_info(1,:);
 new_edges=[];
 for j=1:length(unique_ids)
    to_merge = multiple_idx_info(2,:) == unique_ids(j);
-   if all(~[edge_info(multiple_idx_info(1,to_merge)).reverse]) || all([edge_info(multiple_idx_info(1,to_merge)).reverse])
-      new_edges=[new_edges merge_multiple_edges_in_info(edge_info, node_info, multiple_idx_info(1,to_merge))];
-   else
-      delete_idx(to_merge)=[];
-      continue
-   end
+   new_edges=[new_edges merge_multiple_edges_in_info(edge_info, node_info, multiple_idx_info(1,to_merge))];
 end

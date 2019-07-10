@@ -1,4 +1,4 @@
-function next_device = get_nonlinear_devices_by_idx(edge_info, edge_idx)
+function next_devices = get_nonlinear_devices_by_idx(edge_info, edge_idx)
 % returns array of nonlinear devices from edge_info
 % ----------------------------------------------
 % INPUTS:
@@ -8,30 +8,21 @@ function next_device = get_nonlinear_devices_by_idx(edge_info, edge_idx)
 % devices           ... array of device_type
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
-next_device = [];
-if [edge_info(edge_idx).is_bc]>0
-    next_device               = device_type();
-    next_device.type          = 'nonlinear';
-    next_device.data          = nonlinear_device_data_type();
-    next_device.data.base_idx = NaN; 
-    next_device.data.class    = 'bc';
-    next_device.time_constant = Inf;
+next_devices = [];
+if isempty(edge_info(edge_idx).device_info)
+    return
 end
-if [edge_info(edge_idx).is_be]>0
-    next_device               = device_type();
-    next_device.type          = 'nonlinear';
-    next_device.data          = nonlinear_device_data_type();
-    next_device.data.base_idx = NaN; 
-    next_device.data.class    = 'be';
-    next_device.time_constant = Inf;
-end
-if [edge_info(edge_idx).is_ce]>0
-    next_device                     = device_type();
-    next_device.type                = 'nonlinear';
-    next_device.data                = nonlinear_device_data_type();
-    next_device.data.class          = 'ce';
-    next_device.data.base_idx       =  get_base_idx(edge_info, edge_idx);
-    next_device.time_constant       = Inf;
+crt_class = edge_info(edge_idx).device_info.class;
+next_device               = device_type();
+next_device.type          = 'nonlinear';
+next_device.data          = nonlinear_device_data_type();
+next_device.time_constant = Inf;
+for j=1:length(crt_class)
+    next_device.data.class    = crt_class{j};
+    if strcmp(crt_class{j}, 'ce')
+        next_device.data.base_idx =  get_base_idx(device_info, edge_idx);
+    end
+    next_devices = [next_devices next_device];
 end
 
 function base_idx = get_base_idx(edge_info, edge_idx)

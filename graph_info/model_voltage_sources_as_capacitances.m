@@ -26,12 +26,6 @@ for j=1:length(voltage_sources_node_idx)
     new_edge_info.C_is_dummy   =  false;
     new_edge_info.L            =  0;      
     new_edge_info.C            =  1e4; 
-    new_edge_info.is_base      =  false;
-    new_edge_info.is_collector =  false;   
-    new_edge_info.is_emitter   =  false;
-    new_edge_info.is_bc        =  false;
-    new_edge_info.is_be        =  false;
-    new_edge_info.is_ce        =  false;  
     new_edge_info.device_info  =  nonlinear_device_info_type();
     new_edges = [new_edges new_edge_info];
 end
