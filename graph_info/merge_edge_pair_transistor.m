@@ -1,9 +1,6 @@
-function new_edge_info =  merge_edge_pair(edge_info, node_ids, deleted_node, neigbor_node_pair)
-% Merges two edges with one node in common, returning the new merged edge.
-%
-% The result is one edge with the payloads (i.e.devices) of both edges on
-% it in series. If the deleted node is a transistor, it is replaced
-% by its Ebers-Moll components 
+function new_edge_info =  merge_edge_pair_transistor(edge_info, node_ids, edge_idx)
+% Gets a removed node and two neighboring nodes
+% returns one edge with the payloads (i.e.devices) of both input edges in series. 
 % ----------------------------------------------------------------------
 % INPUTS:
 % edge_info         ... edge_info_type
@@ -15,11 +12,11 @@ function new_edge_info =  merge_edge_pair(edge_info, node_ids, deleted_node, nei
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 
-id_deleted = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(1));
-id_other   = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(2));
+id_deleted = edge_idx(1);
+id_other   = edge_idx(2);
 
 new_edge_info = [];
-if ~isempty(id_deleted)
+if ~isempty(edge_idx)
     new_edge_info              = edge_info_type();
     new_edge_info.s_by_id      = node_ids(neigbor_node_pair(1));
     new_edge_info.t_by_id      = node_ids(neigbor_node_pair(2));
