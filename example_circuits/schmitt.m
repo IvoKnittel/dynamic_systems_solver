@@ -53,5 +53,7 @@ edge_info.t_by_name   = {'upper_left', 'supply_cpy', 'upper_right', 'left_trans'
           is_base     = [    0            0               0             0             1              0              1             0             0          0              0        0              0      ];
           is_collector =[    0            0               0             1             0              1              0             0             0          0              0        0              0      ];
           is_emitter  = [    0            0               0             0             0              0              0             1             0          1              0        0              0      ];
-edge_info.device_info = make_nonlinear_device_info(edge_info, is_base, is_collector, is_emitter, Ct,Rt);
+
+
+edge_info.device_info = make_nonlinear_device_info(edge_info, node_info, is_base, is_collector, is_emitter, Ct,Rt);
 edge_info.linear      = make_linear_device_info(R, L , C , R_is_dummy, false(1,length(L)), false(1,length(C)));

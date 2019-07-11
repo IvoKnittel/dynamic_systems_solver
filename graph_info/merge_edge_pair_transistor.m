@@ -17,6 +17,7 @@ function new_edge_info =  merge_edge_pair(edge_info, node_ids, deleted_node, nei
 
 id_deleted = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(1));
 id_other   = get_edge_to_delete(edge_info, deleted_node, neigbor_node_pair(2));
+
 new_edge_info = [];
 if ~isempty(id_deleted)
     new_edge_info              = edge_info_type();
@@ -25,6 +26,7 @@ if ~isempty(id_deleted)
     new_edge_info.linear       = merge_impedances([edge_info([id_deleted id_other]).linear]);      
     new_edge_info.device_info  = merge_device_info([edge_info(id_deleted).device_info edge_info(id_other).device_info]);
 end
+
 function device_info = merge_device_info(device_infos)
     device_info  = nonlinear_device_info_type();
     if ~isempty(device_infos)

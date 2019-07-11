@@ -1,4 +1,4 @@
-function device_info = make_nonlinear_device_info(edge_info, is_base, is_collector, is_emitter, Ct, Rt)
+function device_info = make_nonlinear_device_info(edge_info, node_info, is_base, is_collector, is_emitter, Ct, Rt)
 % every edges gets a struct containing info about their nonlinear devices
 % so far, transistor capacitances
 % ----------------------------------------------------------------------
@@ -12,8 +12,20 @@ function device_info = make_nonlinear_device_info(edge_info, is_base, is_collect
 % ----------------------------------------------
 % Ivo Knittel 2019 Copyright all rights reserved
 
-is_trans = is_base   | is_collector | is_emitter;
 device_info = repmat(nonlinear_device_info_type(),1,length(is_collector));
+
+trans_node_idx = find(node_info.is_trans);
+for crt_trans_node = 1:length(trans_node_idx)
+    s_is_crt_transistor = strcmp(node_info.names(trans_node_idx), edge_info.s_by_name{trans_node_idx(crt_trans_node)});
+    t_is_crt_transistor = strcmp(node_info.names(trans_node_idx), edge_info.t_by_name{trans_node_idx(crt_trans_node)});
+    edge_linked_to_crt_transistor = s_is_crt_transistor | t_is_crt_transistor;
+    triode_node_ids.b = find(is_base(trans_node_idx)      & edge_linked_to_crt_transistor);
+    triode_node_ids.c = find(is_collector(trans_node_idx) & edge_linked_to_crt_transistor);
+    triode_node_ids.e = find(is_emitter(trans_node_idx)   & edge_linked_to_crt_transistor);
+    device_info(trans_node_idx(crt_trans_node)).triode_node_ids = triode_node_ids;
+end
+
+is_trans = is_base   | is_collector | is_emitter;
 [device_info(is_trans).Ct]=deal(Ct);
 [device_info(is_trans).Rt]=deal(Rt);
 for j=1:length(is_base)
